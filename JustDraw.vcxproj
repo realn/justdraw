@@ -70,11 +70,11 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>$(SolutionDir)3rd\wxWidgets\include;$(SolutionDir)3rd\wxWidgets\include\msvc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)3rd\wxWidgets\include;$(SolutionDir)3rd\wxWidgets\include\msvc;$(SolutionDir)3rd\glm;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\wxWidgets\lib\vc_lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(SolutionDir)3rd\wxWidgets\include;$(SolutionDir)3rd\wxWidgets\include\msvc;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)3rd\wxWidgets\include;$(SolutionDir)3rd\wxWidgets\include\msvc;$(SolutionDir)3rd\glm;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)3rd\wxWidgets\lib\vc_lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -126,12 +126,14 @@
     <ClInclude Include="JDLayer.h" />
     <ClInclude Include="JDShape.h" />
     <ClInclude Include="JDShapeFactory.h" />
+    <ClInclude Include="JDToolLinePanel.h" />
     <ClInclude Include="MainWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="JDLayer.cpp" />
     <ClCompile Include="JDShape.cpp" />
+    <ClCompile Include="JDToolLinePanel.cpp" />
     <ClCompile Include="MainWindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

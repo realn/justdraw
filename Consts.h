@@ -8,8 +8,8 @@ enum class ShapeType {
 };
 
 enum class ToolCmd {
-  CreateLine = 1,
-  CreateRect,
-  CreateCircle,
-  Move
+  None = 0,
+  CreateShape,
+  Move,
+  Size
 };

@@ -22,6 +22,9 @@ namespace jd {
 
     virtual void SetStartPoint(wxPoint const& point) = 0;
     virtual void SetEndPoint(wxPoint const& point) = 0;
+
+    virtual bool IsInMoveBounds(wxPoint const& point, float range) const = 0;
+    virtual void Move(wxPoint const& dist) = 0;
   };
 
   class CLineShape 
@@ -40,6 +43,9 @@ namespace jd {
     virtual void Draw(wxClientDC & dc) override;
     virtual void SetStartPoint(wxPoint const & point) override;
     virtual void SetEndPoint(wxPoint const & point) override;
+
+    virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
+    virtual void Move(wxPoint const& dist) override;
   };
 
   class CRectShape
@@ -59,6 +65,9 @@ namespace jd {
     virtual void SetStartPoint(wxPoint const & point) override;
 
     virtual void SetEndPoint(wxPoint const & point) override;
+
+    virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
+    virtual void Move(wxPoint const& dist) override;
   };
 
   class CCircleShape
@@ -79,5 +88,8 @@ namespace jd {
     virtual void SetStartPoint(wxPoint const & point) override;
 
     virtual void SetEndPoint(wxPoint const & point) override;
+
+    virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
+    virtual void Move(wxPoint const& dist) override;
   };
 }

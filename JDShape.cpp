@@ -1,6 +1,14 @@
 #include "JDShape.h"
 
+#define GLM_ENABLE_EXPERIMENTAL
+
+#include <glm/glm.hpp>
+#include <glm/gtx/closest_point.hpp>
+
 namespace jd {
+  glm::vec2 convert(wxPoint const& p) { return glm::vec2(p.x, p.y); }
+  wxPoint convert(glm::vec2 const& p) { return wxPoint(p.x, p.y); }
+
   CShape::CShape() {}
 
   CShape::~CShape() {}
@@ -24,6 +32,20 @@ namespace jd {
     mB = point;
   }
 
+  bool CLineShape::IsInMoveBounds(wxPoint const & point, float range) const {
+    auto v1 = convert(mA);
+    auto v2 = convert(mB);
+    auto p = convert(point);
+    auto closest = glm::closestPointOnLine(p, v1, v2);
+
+    return glm::distance(p, closest) < range;
+  }
+
+  void CLineShape::Move(wxPoint const& dist) {
+    mA += dist;
+    mB += dist;
+  }
+
   CRectShape::CRectShape(wxPoint const & origin, wxSize const & size) 
     : mOrigin(origin), mSize(size)
   {}
@@ -42,6 +64,15 @@ namespace jd {
   void CRectShape::SetEndPoint(wxPoint const & point) {
     auto size = point - mOrigin;
     mSize.Set(std::abs(size.x), std::abs(size.y));
+  }
+
+  bool CRectShape::IsInMoveBounds(wxPoint const & point, float range) const {
+    auto rect = wxRect(mOrigin, mSize);
+    return rect.Contains(point);
+  }
+
+  void CRectShape::Move(wxPoint const& dist) {
+    mOrigin += dist;
   }
 
   CCircleShape::CCircleShape(wxPoint const & origin, int radius) 
@@ -64,5 +95,13 @@ namespace jd {
     auto y = static_cast<double>(size.y);
 
     mRadius = static_cast<int>(std::sqrt(x*x + y*y));
+  }
+
+  bool CCircleShape::IsInMoveBounds(wxPoint const & point, float range) const {
+    return glm::distance(convert(mOrigin), convert(point)) - mRadius < range;
+  }
+
+  void CCircleShape::Move(wxPoint const& dist) {
+    mOrigin += dist;
   }
 }
