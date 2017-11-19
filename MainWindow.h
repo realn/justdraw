@@ -18,7 +18,7 @@ namespace jd {
 
   using ShapeFactoryMapT = std::map<ShapeType, std::shared_ptr<IShapeFactory>>;
   using ShapeVecT = std::vector<std::shared_ptr<CShape>>;
-  using EditorMapT = std::map<ShapeType, CShapeEditor*>;
+  using EditorMapT = std::map<ShapeType, std::shared_ptr<CShapeEditor>>;
   using ToolMapT = std::map<ToolType, std::shared_ptr<CShapeTool>>;
 
   class CMainWindow

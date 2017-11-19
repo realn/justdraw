@@ -13,7 +13,7 @@ namespace jd {
   class CShapeEditor;
   class CDragContext;
 
-  using EditorMapT = std::map<ShapeType, CShapeEditor*>;
+  using EditorMapT = std::map<ShapeType, std::shared_ptr<CShapeEditor>>;
   using FactoryMapT = std::map<ShapeType, std::shared_ptr<IShapeFactory>>;
   using ShapeVecT = std::vector<std::shared_ptr<CShape>>;
 

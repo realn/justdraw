@@ -6,6 +6,7 @@
 #include <wx/button.h>
 #include <wx/textctrl.h>
 
+#include "Defines.h"
 #include "JDShape.h"
 #include "JDShapeFactory.h"
 #include "JDShapeEditors.h"
@@ -53,11 +54,11 @@ namespace jd {
     auto sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(mCanvas, 1, wxEXPAND, 0);
     
-    mEditors[ShapeType::Line] = new CLineShapeEditor(this);
+    mEditors[ShapeType::Line] = wxmake_shared<CLineShapeEditor>(this);
 
     for(auto& item : mEditors) {
       item.second->GetConfirmButton()->Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);
-      sizer->Add(item.second);
+      sizer->Add(item.second.get());
       item.second->Hide();
     }
 
