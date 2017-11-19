@@ -8,7 +8,7 @@
 
 #include "JDShape.h"
 #include "JDShapeFactory.h"
-#include "JDToolPanels.h"
+#include "JDShapeEditors.h"
 
 #include "MainWindow.h"
 
@@ -52,7 +52,7 @@ namespace jd {
     auto sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(mCanvas, 1, wxEXPAND, 0);
     
-    mEditors[ShapeType::Line] = new CJDToolLinePanel(this, JD_CMD_LINE);
+    mEditors[ShapeType::Line] = new CLineShapeEditor(this, JD_CMD_LINE);
 
     for(auto& item : mEditors) {
       item.second->GetConfirmButton()->Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);

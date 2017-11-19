@@ -36,10 +36,10 @@
     <ClInclude Include="JDDocument.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="JDToolPanels.h">
+    <ClInclude Include="JDDragContext.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="JDDragContext.h">
+    <ClInclude Include="JDShapeEditors.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -56,7 +56,7 @@
     <ClCompile Include="JDLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JDToolPanels.cpp">
+    <ClCompile Include="JDShapeEditors.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

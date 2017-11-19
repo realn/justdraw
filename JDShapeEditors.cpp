@@ -6,20 +6,20 @@
 
 #include "JDShape.h"
 #include "JDDragContext.h"
-#include "JDToolPanels.h"
+#include "JDShapeEditors.h"
 
 namespace jd {
-  CJDToolPanel::CJDToolPanel(wxWindow * parent, int buttonId) 
+  CShapeEditor::CShapeEditor(wxWindow * parent, int buttonId) 
     : wxPanel(parent), mConfirmButtonId(buttonId)
   {
     mConfirmButton = new wxButton(this, mConfirmButtonId, L"Confirm");
   }
 
-  CJDToolPanel::~CJDToolPanel() {}
+  CShapeEditor::~CShapeEditor() {}
 
 
-  CJDToolLinePanel::CJDToolLinePanel(wxWindow * parent, int buttonId)
-    : CJDToolPanel(parent, buttonId)
+  CLineShapeEditor::CLineShapeEditor(wxWindow * parent, int buttonId)
+    : CShapeEditor(parent, buttonId)
   {
     auto inputSize = wxSize(40, 20);
     mPointAX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
@@ -48,15 +48,15 @@ namespace jd {
     SetSizerAndFit(lineTool);
   }
 
-  CJDToolLinePanel::~CJDToolLinePanel() {}
+  CLineShapeEditor::~CLineShapeEditor() {}
 
-  std::shared_ptr<CShape> CJDToolLinePanel::CreateShape() {
+  std::shared_ptr<CShape> CLineShapeEditor::CreateShape() {
     auto p1 = GetPointA();
     auto p2 = GetPointB();
     return std::make_shared<CLineShape>(p1, p2);
   }
 
-  void CJDToolLinePanel::SetChanges(std::shared_ptr<CShape> shape) const {
+  void CLineShapeEditor::SetChanges(std::shared_ptr<CShape> shape) const {
     auto line = std::dynamic_pointer_cast<CLineShape>(shape);
     if(line) {
       auto p1 = GetPointA();
@@ -65,7 +65,7 @@ namespace jd {
     }
   }
 
-  void CJDToolLinePanel::SetData(CShape * shape) {
+  void CLineShapeEditor::SetData(CShape * shape) {
     auto line = dynamic_cast<CLineShape*>(shape);
     if(line) {
       SetPointA(line->GetA());
@@ -77,37 +77,37 @@ namespace jd {
     }
   }
 
-  void CJDToolLinePanel::SetData(CDragContext const & data) {
+  void CLineShapeEditor::SetData(CDragContext const & data) {
     SetPointA(data.mStart);
     SetPointB(data.mEnd);
   }
 
-  void CJDToolLinePanel::DrawPreview(wxClientDC & dev) const {
+  void CLineShapeEditor::DrawPreview(wxClientDC & dev) const {
     dev.DrawLine(GetPointA(), GetPointB());
   }
 
-  void CJDToolLinePanel::SetPointA(wxPoint const & value) {
+  void CLineShapeEditor::SetPointA(wxPoint const & value) {
     mPointAX->SetValue(wxString::Format(L"%d", value.x));
     mPointAY->SetValue(wxString::Format(L"%d", value.y));
   }
 
-  void CJDToolLinePanel::SetPointB(wxPoint const & value) {
+  void CLineShapeEditor::SetPointB(wxPoint const & value) {
     mPointBX->SetValue(wxString::Format(L"%d", value.x));
     mPointBY->SetValue(wxString::Format(L"%d", value.y));
   }
 
-  wxPoint CJDToolLinePanel::GetPointA() const {
+  wxPoint CLineShapeEditor::GetPointA() const {
     return wxPoint(wxAtoi(mPointAX->GetValue()), wxAtoi(mPointAY->GetValue()));
   }
 
-  wxPoint CJDToolLinePanel::GetPointB() const {
+  wxPoint CLineShapeEditor::GetPointB() const {
     return wxPoint(wxAtoi(mPointBX->GetValue()), wxAtoi(mPointBY->GetValue()));
   }
 
 
 
   //CJDToolRectPanel::CJDToolRectPanel(wxWindow * parent, int buttonId) 
-  //  : CJDToolPanel(parent, buttonId)
+  //  : CShapeEditor(parent, buttonId)
   //{}
 
   //CJDToolRectPanel::~CJDToolRectPanel() {}
@@ -122,7 +122,7 @@ namespace jd {
 
 
   //CJDToolCirclePanel::CJDToolCirclePanel(wxWindow * parent, int buttonId) 
-  //  : CJDToolPanel(parent, buttonId)
+  //  : CShapeEditor(parent, buttonId)
   //{}
 
   //CJDToolCirclePanel::~CJDToolCirclePanel() {}

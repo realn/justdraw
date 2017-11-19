@@ -127,14 +127,14 @@
     <ClInclude Include="JDLayer.h" />
     <ClInclude Include="JDShape.h" />
     <ClInclude Include="JDShapeFactory.h" />
-    <ClInclude Include="JDToolPanels.h" />
+    <ClInclude Include="JDShapeEditors.h" />
     <ClInclude Include="MainWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="JDLayer.cpp" />
     <ClCompile Include="JDShape.cpp" />
-    <ClCompile Include="JDToolPanels.cpp" />
+    <ClCompile Include="JDShapeEditors.cpp" />
     <ClCompile Include="MainWindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
