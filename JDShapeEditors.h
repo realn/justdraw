@@ -2,12 +2,12 @@
 
 #include <memory>
 #include <wx/panel.h>
+#include "Controls.h"
 
 class wxTextCtrl;
 
 namespace jd {
   class CShape;
-  class CDragContext;
 
   class CShapeEditor
     : public wxPanel {
@@ -28,8 +28,8 @@ namespace jd {
   class CLineShapeEditor
     : public CShapeEditor {
   private:
-    wxTextCtrl* mPointAX = nullptr;
-    wxTextCtrl* mPointAY = nullptr;
+    CLabelValueInput<int>* mPointAX = nullptr;
+    CLabelValueInput<int>* mPointAY = nullptr;
     wxTextCtrl* mPointBX = nullptr;
     wxTextCtrl* mPointBY = nullptr;
 

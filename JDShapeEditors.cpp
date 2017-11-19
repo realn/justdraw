@@ -4,8 +4,8 @@
 #include <wx/button.h>
 #include <wx/stattext.h>
 
+#include "Controls.h"
 #include "JDShape.h"
-#include "JDDragContext.h"
 #include "JDShapeEditors.h"
 
 namespace jd {
@@ -22,15 +22,13 @@ namespace jd {
     : CShapeEditor(parent)
   {
     auto inputSize = wxSize(40, 20);
-    mPointAX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
-    mPointAY = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
+    mPointAX = new CLabelValueInput<int>(this, L"X: ", 0, inputSize);
+    mPointAY = new CLabelValueInput<int>(this, L"X: ", 0, inputSize);
     mPointBX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
     mPointBY = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
 
     auto pointA = new wxStaticBoxSizer(wxHORIZONTAL, this, L"Point A");
-    pointA->Add(new wxStaticText(this, wxID_ANY, L"X:"));
     pointA->Add(mPointAX, 1, wxEXPAND);
-    pointA->Add(new wxStaticText(this, wxID_ANY, L"Y:"));
     pointA->Add(mPointAY, 1, wxEXPAND);
 
     auto pointB = new wxStaticBoxSizer(wxHORIZONTAL, this, L"Point B");
@@ -78,8 +76,8 @@ namespace jd {
   }
 
   void CLineShapeEditor::SetPointA(wxPoint const & value) {
-    mPointAX->SetValue(wxString::Format(L"%d", value.x));
-    mPointAY->SetValue(wxString::Format(L"%d", value.y));
+    mPointAX->SetValue(value.x);
+    mPointAY->SetValue(value.y);
   }
 
   void CLineShapeEditor::SetPointB(wxPoint const & value) {
@@ -88,7 +86,7 @@ namespace jd {
   }
 
   wxPoint CLineShapeEditor::GetPointA() const {
-    return wxPoint(wxAtoi(mPointAX->GetValue()), wxAtoi(mPointAY->GetValue()));
+    return wxPoint(mPointAX->GetValue(), mPointAY->GetValue());
   }
 
   wxPoint CLineShapeEditor::GetPointB() const {
