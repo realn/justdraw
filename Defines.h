@@ -1,6 +1,8 @@
 #pragma once
 
 #include <memory>
+#include <sstream>
+#include <string>
 #include <wx/window.h>
 
 template<class _wxType, class ... Args>
@@ -20,4 +22,17 @@ inline int wxid(_Enum value) {
 template<typename _Enum>
 inline _Enum wxid(int value) {
   return static_cast<_Enum>(value);
+}
+
+template<typename _Type>
+inline std::string tostr(_Type const& value) {
+  auto ss = std::stringstream();
+  ss << value;
+  return ss.str();
+}
+
+template<typename _Type>
+inline _Type fromstr(std::string const& value) {
+  auto ss = std::stringstream(value);
+  auto result = _Type();
 }

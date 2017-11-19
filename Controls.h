@@ -1,18 +1,21 @@
 #pragma once
 
+#include <memory>
+#include <sstream>
+
 #include <wx/window.h>
 #include <wx/textctrl.h>
 #include <wx/stattext.h>
 #include <wx/validate.h>
 
-#include <sstream>
+#include "Defines.h"
 
 namespace jd {
   class CLabelTextInput
     : public wxWindow {
   protected:
-    wxStaticText* mLabel = nullptr;
-    wxTextCtrl* mInput = nullptr;
+    std::shared_ptr<wxStaticText> mLabel;
+    std::shared_ptr<wxTextCtrl> mInput;
 
   public:
     CLabelTextInput(wxWindow* parent,
@@ -23,15 +26,16 @@ namespace jd {
     void SetValue(wxString const& value) { mInput->SetValue(value); }
     wxString GetValue() const { return mInput->GetValue(); }
 
-    wxStaticText* GetLabelCtrl() const { return mLabel; }
-    wxTextCtrl* GetInputCtrl() const { return mInput; }
+    wxStaticText& GetLabelCtrl() const { return *mLabel; }
+    wxTextCtrl& GetInputCtrl() const { return *mInput; }
   };
 
   template<typename _Type>
   class CLabelValueInput
     : public wxWindow {
   private:
-    CLabelTextInput* mEdit = nullptr;
+    std::shared_ptr<CLabelTextInput> mEdit;
+
   public:
     CLabelValueInput(wxWindow* parent,
                      wxString const& label = wxString(),
