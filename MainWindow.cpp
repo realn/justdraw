@@ -8,7 +8,7 @@
 
 #include "JDShape.h"
 #include "JDShapeFactory.h"
-#include "JDToolLinePanel.h"
+#include "JDToolPanels.h"
 
 #include "MainWindow.h"
 
@@ -48,16 +48,33 @@ namespace jd {
     mCanvas->Bind(wxEVT_RIGHT_DOWN, &CMainWindow::OnCanvasMouseDown, this);
     mCanvas->Bind(wxEVT_MOTION, &CMainWindow::OnCanvasMouseMove, this);
     mCanvas->Bind(wxEVT_PAINT, &CMainWindow::OnCanvasPaint, this);
-    // Line
-    {
-      mToolLinePanel = new CJDToolLinePanel(this, JD_CMD_LINE);
-      mToolLinePanel->GetConfirmButton()->Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);
-      mToolLinePanel->Hide();
-    }
 
     auto sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(mCanvas, 1, wxEXPAND, 0);
-    sizer->Add(mToolLinePanel, 0, 0);
+    
+    // Line
+    {
+      auto editor = new CJDToolLinePanel(this, JD_CMD_LINE);
+      editor->GetConfirmButton()->Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);
+      mEditors[ShapeType::Line] = editor;
+    }
+    // Rect
+    {
+      auto editor = new CJDToolRectPanel(this, JD_CMD_RECT);
+      editor->GetConfirmButton()->Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);
+      mEditors[ShapeType::Rect] = editor;
+    }
+    // Circle
+    {
+      auto editor = new CJDToolCirclePanel(this, JD_CMD_CIRCLE);
+      editor->GetConfirmButton()->Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);
+      mEditors[ShapeType::Circle] = editor;
+    }
+
+    for(auto& item : mEditors) {
+      sizer->Add(item.second);
+      item.second->Hide();
+    }
 
     SetSizer(sizer);
     
@@ -87,27 +104,18 @@ namespace jd {
   }
 
   void CMainWindow::OnToolbarButtonClicked(wxCommandEvent & event) {
+    mCmd = ToolCmd::None;
+    mCurrentShapeType = ShapeType::None;
+    for(auto& item : mEditors) { item.second->Hide(); }
+
     switch(event.GetId()) {
     case JD_CMD_LINE:
     case JD_CMD_RECT:
     case JD_CMD_CIRCLE:
       {
-        auto type = static_cast<ShapeType>(event.GetId());
-        mCurrentFactory = mShapeFactories.find(type)->second;
+        mCurrentShapeType = static_cast<ShapeType>(event.GetId());
         mCmd = ToolCmd::CreateShape;
-        mToolLinePanel->Hide();
-        switch(type) {
-        case ShapeType::Line:
-          mToolLinePanel->Show();
-          break;
-        case ShapeType::Rect:
-          break;
-        case ShapeType::Circle:
-          break;
-        default:
-          break;
-        }
-        GetSizer()->Layout();
+        mEditors[mCurrentShapeType]->Show();
         break;
       }
 
@@ -118,6 +126,8 @@ namespace jd {
     default:
       break;
     }
+
+    GetSizer()->Layout();
   }
 
   void CMainWindow::OnCanvasMouseUp(wxMouseEvent & event) {
@@ -162,8 +172,8 @@ namespace jd {
     case ToolCmd::None:
       break;
     case ToolCmd::CreateShape:
-      if(mCurrentFactory && event.GetButton() == wxMOUSE_BTN_LEFT) {
-        mCurrentShape = std::shared_ptr<CShape>(mCurrentFactory->Create());
+      if(event.GetButton() == wxMOUSE_BTN_LEFT) {
+        mCurrentShape = std::shared_ptr<CShape>(mShapeFactories[mCurrentShapeType]->Create());
         mCurrentShape->SetStartPoint(event.GetPosition());
       }
       break;
@@ -177,8 +187,6 @@ namespace jd {
     default:
       break;
     }
-
-
     Refresh();
   }
 
@@ -216,23 +224,11 @@ namespace jd {
 
   void CMainWindow::OnCanvasPaint(wxPaintEvent & event) {
     wxPaintDC dev(mCanvas);
-
     DrawShapes(dev);
   }
 
   void CMainWindow::OnShapeCreateButtonClicked(wxCommandEvent & event) {
-    switch(event.GetId()) {
-    case JD_CMD_LINE:
-      {
-        auto a = mToolLinePanel->GetPointA();
-        auto b = mToolLinePanel->GetPointB();
-        mShapes.push_back(std::make_shared<CLineShape>(a, b));
-      }
-      break;
-
-    default:
-      break;
-    }
+    mShapes.push_back(mEditors[mCurrentShapeType]->CreateShape());
     Refresh();
   }
 

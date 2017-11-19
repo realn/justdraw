@@ -36,7 +36,7 @@
     <ClInclude Include="JDDocument.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="JDToolLinePanel.h">
+    <ClInclude Include="JDToolPanels.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -53,7 +53,7 @@
     <ClCompile Include="JDLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="JDToolLinePanel.cpp">
+    <ClCompile Include="JDToolPanels.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

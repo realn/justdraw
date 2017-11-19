@@ -38,6 +38,10 @@ namespace jd {
     CLineShape(wxPoint const& a = wxPoint(), wxPoint const& b = wxPoint());
     virtual ~CLineShape();
 
+    void Set(wxPoint const& a, wxPoint const& b) { mA = a; mB = b; }
+    wxPoint GetA() const { return mA; }
+    wxPoint GetB() const { return mB; }
+
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Line; }
     virtual void Draw(wxClientDC & dc) override;
@@ -57,6 +61,10 @@ namespace jd {
   public:
     CRectShape(wxPoint const& origin = wxPoint(), wxSize const& size = wxSize());
     virtual ~CRectShape();
+
+    void Set(wxPoint const& origin, wxSize const& size) {mOrigin = origin; mSize = size; }
+    wxPoint GetOrigin() const { return mOrigin; }
+    wxSize GetSize() const { return mSize; }
 
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Rect; }
@@ -79,6 +87,10 @@ namespace jd {
   public:
     CCircleShape(wxPoint const& origin = wxPoint(), int radius = 0);
     virtual ~CCircleShape();
+
+    void Set(wxPoint const& origin, int const radius) { mOrigin = origin; mRadius = radius; }
+    wxPoint GetOrigin() const { return mOrigin; }
+    int GetRadius() const { return mRadius; }
 
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Circle; }

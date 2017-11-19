@@ -12,28 +12,26 @@ class wxPanel;
 namespace jd {
   class CShape;
   class CShapeFactoryBase;
-  class CJDToolLinePanel;
+  class CJDToolPanel;
 
   using ShapeFactoryMapT = std::map<ShapeType, std::shared_ptr<CShapeFactoryBase>>;
   using ShapeVecT = std::vector<std::shared_ptr<CShape>>;
+  using EditorMapT = std::map<ShapeType, CJDToolPanel*>;
 
   class CMainWindow
     : public wxFrame {
   private:
     ShapeFactoryMapT mShapeFactories;
     ShapeVecT mShapes;
+    EditorMapT mEditors;
 
     ToolCmd mCmd = ToolCmd::None;
 
-    std::shared_ptr<CShapeFactoryBase> mCurrentFactory;
+    ShapeType mCurrentShapeType = ShapeType::None;
     std::shared_ptr<CShape> mCurrentShape;
     wxPanel* mCanvas = nullptr;
     wxPoint mMouseLastPos;
     bool mMouseDrag = false;
-
-    CJDToolLinePanel* mToolLinePanel = nullptr;
-    wxPanel* mToolRectPanel = nullptr;
-    wxPanel* mToolSpherePanel = nullptr;
 
   public:
     CMainWindow();
