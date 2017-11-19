@@ -123,6 +123,7 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="Consts.h" />
     <ClInclude Include="JDDocument.h" />
+    <ClInclude Include="JDDragContext.h" />
     <ClInclude Include="JDLayer.h" />
     <ClInclude Include="JDShape.h" />
     <ClInclude Include="JDShapeFactory.h" />

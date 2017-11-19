@@ -7,6 +7,7 @@ class wxTextCtrl;
 
 namespace jd {
   class CShape;
+  class CDragContext;
 
   class CJDToolPanel
     : public wxPanel {
@@ -23,6 +24,8 @@ namespace jd {
     virtual std::shared_ptr<CShape> CreateShape() = 0;
     virtual void SetChanges(std::shared_ptr<CShape> shape) const = 0;
     virtual void SetData(CShape* shape) = 0;
+    virtual void SetData(CDragContext const& data) = 0;
+    virtual void DrawPreview(wxClientDC& dev) const = 0;
   };
 
   class CJDToolLinePanel
@@ -41,6 +44,8 @@ namespace jd {
     virtual std::shared_ptr<CShape> CreateShape() override;
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
     virtual void SetData(CShape* shape) override;
+    virtual void SetData(CDragContext const& data) override;
+    virtual void DrawPreview(wxClientDC& dev) const override;
 
   private:
     void SetPointA(wxPoint const& value);
@@ -50,27 +55,27 @@ namespace jd {
     wxPoint GetPointB() const;
   };
 
-  class CJDToolRectPanel
-    : public CJDToolPanel {
-  public:
-    CJDToolRectPanel(wxWindow* parent, int buttonId);
-    virtual ~CJDToolRectPanel();
+  //class CJDToolRectPanel
+  //  : public CJDToolPanel {
+  //public:
+  //  CJDToolRectPanel(wxWindow* parent, int buttonId);
+  //  virtual ~CJDToolRectPanel();
 
-    // Inherited via CJDToolPanel
-    virtual std::shared_ptr<CShape> CreateShape() override;
-    virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
-    virtual void SetData(CShape * shape) override;
-  };
+  //  // Inherited via CJDToolPanel
+  //  virtual std::shared_ptr<CShape> CreateShape() override;
+  //  virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
+  //  virtual void SetData(CShape * shape) override;
+  //};
 
-  class CJDToolCirclePanel
-    : public CJDToolPanel {
-  public:
-    CJDToolCirclePanel(wxWindow* parent, int buttonId);
-    virtual ~CJDToolCirclePanel();
+  //class CJDToolCirclePanel
+  //  : public CJDToolPanel {
+  //public:
+  //  CJDToolCirclePanel(wxWindow* parent, int buttonId);
+  //  virtual ~CJDToolCirclePanel();
 
-    // Inherited via CJDToolPanel
-    virtual std::shared_ptr<CShape> CreateShape() override;
-    virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
-    virtual void SetData(CShape * shape) override;
-  };
+  //  // Inherited via CJDToolPanel
+  //  virtual std::shared_ptr<CShape> CreateShape() override;
+  //  virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
+  //  virtual void SetData(CShape * shape) override;
+  //};
 }

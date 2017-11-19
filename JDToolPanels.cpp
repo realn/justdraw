@@ -2,8 +2,10 @@
 #include <wx/sizer.h>
 #include <wx/textctrl.h>
 #include <wx/button.h>
+#include <wx/stattext.h>
 
 #include "JDShape.h"
+#include "JDDragContext.h"
 #include "JDToolPanels.h"
 
 namespace jd {
@@ -19,23 +21,28 @@ namespace jd {
   CJDToolLinePanel::CJDToolLinePanel(wxWindow * parent, int buttonId)
     : CJDToolPanel(parent, buttonId)
   {
-    mPointAX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, wxSize(60, 20));
-    mPointAY = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, wxSize(60, 20));
-    mPointBX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, wxSize(60, 20));
-    mPointBY = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, wxSize(60, 20));
+    auto inputSize = wxSize(40, 20);
+    mPointAX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
+    mPointAY = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
+    mPointBX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
+    mPointBY = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
 
     auto pointA = new wxStaticBoxSizer(wxHORIZONTAL, this, L"Point A");
+    pointA->Add(new wxStaticText(this, wxID_ANY, L"X:"));
     pointA->Add(mPointAX, 1, wxEXPAND);
+    pointA->Add(new wxStaticText(this, wxID_ANY, L"Y:"));
     pointA->Add(mPointAY, 1, wxEXPAND);
 
     auto pointB = new wxStaticBoxSizer(wxHORIZONTAL, this, L"Point B");
+    pointB->Add(new wxStaticText(this, wxID_ANY, L"X:"));
     pointB->Add(mPointBX);
+    pointB->Add(new wxStaticText(this, wxID_ANY, L"Y:"));
     pointB->Add(mPointBY);
 
     auto lineTool = new wxStaticBoxSizer(wxVERTICAL, this, L"Line");
     lineTool->Add(pointA);
     lineTool->Add(pointB);
-    lineTool->Add(mConfirmButton);
+    lineTool->Add(mConfirmButton, wxALIGN_CENTER_HORIZONTAL);
     lineTool->AddStretchSpacer();
 
     SetSizerAndFit(lineTool);
@@ -70,6 +77,15 @@ namespace jd {
     }
   }
 
+  void CJDToolLinePanel::SetData(CDragContext const & data) {
+    SetPointA(data.mStart);
+    SetPointB(data.mEnd);
+  }
+
+  void CJDToolLinePanel::DrawPreview(wxClientDC & dev) const {
+    dev.DrawLine(GetPointA(), GetPointB());
+  }
+
   void CJDToolLinePanel::SetPointA(wxPoint const & value) {
     mPointAX->SetValue(wxString::Format(L"%d", value.x));
     mPointAY->SetValue(wxString::Format(L"%d", value.y));
@@ -90,33 +106,33 @@ namespace jd {
 
 
 
-  CJDToolRectPanel::CJDToolRectPanel(wxWindow * parent, int buttonId) 
-    : CJDToolPanel(parent, buttonId)
-  {}
+  //CJDToolRectPanel::CJDToolRectPanel(wxWindow * parent, int buttonId) 
+  //  : CJDToolPanel(parent, buttonId)
+  //{}
 
-  CJDToolRectPanel::~CJDToolRectPanel() {}
+  //CJDToolRectPanel::~CJDToolRectPanel() {}
 
-  std::shared_ptr<CShape> CJDToolRectPanel::CreateShape() {
-    return std::shared_ptr<CShape>();
-  }
+  //std::shared_ptr<CShape> CJDToolRectPanel::CreateShape() {
+  //  return std::shared_ptr<CShape>();
+  //}
 
-  void CJDToolRectPanel::SetChanges(std::shared_ptr<CShape> shape) const {}
+  //void CJDToolRectPanel::SetChanges(std::shared_ptr<CShape> shape) const {}
 
-  void CJDToolRectPanel::SetData(CShape * shape) {}
+  //void CJDToolRectPanel::SetData(CShape * shape) {}
 
 
-  CJDToolCirclePanel::CJDToolCirclePanel(wxWindow * parent, int buttonId) 
-    : CJDToolPanel(parent, buttonId)
-  {}
+  //CJDToolCirclePanel::CJDToolCirclePanel(wxWindow * parent, int buttonId) 
+  //  : CJDToolPanel(parent, buttonId)
+  //{}
 
-  CJDToolCirclePanel::~CJDToolCirclePanel() {}
+  //CJDToolCirclePanel::~CJDToolCirclePanel() {}
 
-  std::shared_ptr<CShape> CJDToolCirclePanel::CreateShape() {
-    return std::shared_ptr<CShape>();
-  }
+  //std::shared_ptr<CShape> CJDToolCirclePanel::CreateShape() {
+  //  return std::shared_ptr<CShape>();
+  //}
 
-  void CJDToolCirclePanel::SetChanges(std::shared_ptr<CShape> shape) const {}
+  //void CJDToolCirclePanel::SetChanges(std::shared_ptr<CShape> shape) const {}
 
-  void CJDToolCirclePanel::SetData(CShape * shape) {}
+  //void CJDToolCirclePanel::SetData(CShape * shape) {}
 
 }

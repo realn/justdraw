@@ -6,6 +6,7 @@
 #include <wx/frame.h>
 
 #include "Consts.h"
+#include "JDDragContext.h"
 
 class wxPanel;
 
@@ -30,8 +31,7 @@ namespace jd {
     ShapeType mCurrentShapeType = ShapeType::None;
     std::shared_ptr<CShape> mCurrentShape;
     wxPanel* mCanvas = nullptr;
-    wxPoint mMouseLastPos;
-    bool mMouseDrag = false;
+    CDragContext mDrag;
 
   public:
     CMainWindow();
@@ -40,6 +40,7 @@ namespace jd {
   private:
     void DrawShapes(wxClientDC& dev);
     std::shared_ptr<CShape> FindShapeOnPoint(wxPoint const& point, float range) const;
+    CJDToolPanel* GetEditor() const { return mEditors.at(mCurrentShapeType); }
 
     void OnToolbarButtonClicked(wxCommandEvent& event);
     void OnCanvasMouseUp(wxMouseEvent& event);
