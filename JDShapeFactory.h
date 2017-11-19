@@ -3,17 +3,17 @@
 namespace jd {
   class CShape;
 
-  class CShapeFactoryBase {
+  class IShapeFactory {
   public:
-    CShapeFactoryBase() {}
-    virtual ~CShapeFactoryBase() {}
+    IShapeFactory() {}
+    virtual ~IShapeFactory() {}
 
     virtual CShape* Create() const = 0;
   };
 
   template<typename _Type>
   class CShapeFactory 
-    : public CShapeFactoryBase
+    : public IShapeFactory
   {
   public:
     CShapeFactory() {}

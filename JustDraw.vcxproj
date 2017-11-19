@@ -128,6 +128,7 @@
     <ClInclude Include="JDShape.h" />
     <ClInclude Include="JDShapeFactory.h" />
     <ClInclude Include="JDShapeEditors.h" />
+    <ClInclude Include="JDShapeTools.h" />
     <ClInclude Include="MainWindow.h" />
   </ItemGroup>
   <ItemGroup>

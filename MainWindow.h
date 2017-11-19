@@ -12,10 +12,10 @@ class wxPanel;
 
 namespace jd {
   class CShape;
-  class CShapeFactoryBase;
+  class IShapeFactory;
   class CShapeEditor;
 
-  using ShapeFactoryMapT = std::map<ShapeType, std::shared_ptr<CShapeFactoryBase>>;
+  using ShapeFactoryMapT = std::map<ShapeType, std::shared_ptr<IShapeFactory>>;
   using ShapeVecT = std::vector<std::shared_ptr<CShape>>;
   using EditorMapT = std::map<ShapeType, CShapeEditor*>;
 
