@@ -60,4 +60,13 @@ namespace jd {
     wxStaticText* GetLabelCtrl() const { return mEdit->GetLabelCtrl(); }
     wxTextCtrl* GetInputCtrl() const { return mEdit->GetInputCtrl(); }
   };
+
+
+  class CLabelPointInput
+    : public wxWindow
+  {
+  protected:
+    CLabelValueInput<int> mEditX = nullptr;
+    CLabelValueInput<int> mEditY = nullptr;
+  };
 }
