@@ -9,6 +9,7 @@
 #include "JDShape.h"
 #include "JDShapeFactory.h"
 #include "JDShapeEditors.h"
+#include "JDShapeTools.h"
 
 #include "MainWindow.h"
 
@@ -52,7 +53,7 @@ namespace jd {
     auto sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(mCanvas, 1, wxEXPAND, 0);
     
-    mEditors[ShapeType::Line] = new CLineShapeEditor(this, JD_CMD_LINE);
+    mEditors[ShapeType::Line] = new CLineShapeEditor(this);
 
     for(auto& item : mEditors) {
       item.second->GetConfirmButton()->Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);
@@ -63,18 +64,19 @@ namespace jd {
     SetSizer(sizer);
     
     toolbar->Bind(wxEVT_MENU, &CMainWindow::OnToolbarButtonClicked, this);
+
+    mTools[ToolType::Create] = std::make_shared<CCreateShapeTool>(mEditors, mShapeFactories);
   }
 
   CMainWindow::~CMainWindow() {}
 
   void CMainWindow::DrawShapes(wxClientDC & dev) {
-
     for(auto& shape : mShapes) {
       shape->Draw(dev);
     }
 
-    if(mCmd == ToolCmd::CreateShape && mDrag.mIsDragging) {
-      GetEditor()->DrawPreview(dev);
+    if(mCurrentToolType != ToolType::None) {
+      GetTool().DrawPreview(dev);
     }
   }
 
@@ -88,29 +90,28 @@ namespace jd {
   }
 
   void CMainWindow::OnToolbarButtonClicked(wxCommandEvent & event) {
-    mCmd = ToolCmd::None;
+    mCurrentToolType = ToolType::None;
     mCurrentShapeType = ShapeType::None;
+
     for(auto& item : mEditors) { item.second->Hide(); }
+    for(auto& item : mTools) { item.second->Cancel(); }
 
     switch(event.GetId()) {
     case JD_CMD_LINE:
     case JD_CMD_RECT:
     case JD_CMD_CIRCLE:
-      {
-        mCurrentShapeType = static_cast<ShapeType>(event.GetId());
-        mCmd = ToolCmd::CreateShape;
-        mEditors[mCurrentShapeType]->Show();
-        break;
-      }
+      mCurrentToolType = ToolType::Create;
+      GetTool().Prepare(static_cast<ShapeType>(event.GetId()));
+      break;
 
     case JD_CMD_MOVE:
-      mCmd = ToolCmd::Move;
+      mCurrentToolType = ToolType::Move;
+      GetTool().Prepare(ShapeType::None);
       break;
 
     default:
       break;
     }
-
     GetSizer()->Layout();
   }
 
@@ -118,28 +119,19 @@ namespace jd {
     mDrag.mEnd = event.GetPosition();
     mDrag.mIsDragging = false;
 
-    switch(mCmd) {
-    case ToolCmd::None:
+    if(mCurrentToolType == ToolType::None)
       return;
-    case ToolCmd::CreateShape:
-        if(event.GetButton() == mDrag.mButton == wxMOUSE_BTN_LEFT) {
-          mShapes.push_back(GetEditor()->CreateShape());
-        }
-      break;
-    case ToolCmd::Move:
-      if(mCurrentShape && event.GetButton() == wxMOUSE_BTN_LEFT) {
-        mCurrentShape->Move(event.GetPosition() - mDrag.mLast);
-        GetEditor()->SetData(mCurrentShape.get());
-        GetEditor()->Show();
-        GetSizer()->Layout();
-      }
-      break;
-    case ToolCmd::Size:
-      break;
-    default:
-      break;
-    }
 
+    if(event.GetButton() == mDrag.mButton == wxMOUSE_BTN_LEFT) {
+      auto result = GetTool().Finish();
+      for(auto& shape : result) {
+        mShapes.push_back(shape);
+      }
+    }
+    else if(event.GetButton() == wxMOUSE_BTN_RIGHT) {
+      GetTool().Cancel();
+    }
+    GetSizer()->Layout();
     Refresh();
   }
 
@@ -148,60 +140,29 @@ namespace jd {
     mDrag.mIsDragging = true;
     mDrag.mButton = event.GetButton();
 
-    switch(mCmd) {
-    case ToolCmd::None:
-      break;
-    case ToolCmd::CreateShape:
-      break;
-    case ToolCmd::Move:
-      if(!mCurrentShape && event.GetButton() == wxMOUSE_BTN_LEFT) {
-        mCurrentShape = FindShapeOnPoint(event.GetPosition(), 1.0f);
-        if(mCurrentShape) {
-          mCurrentShapeType = mCurrentShape->GetType();
-          GetEditor()->SetData(mCurrentShape.get());
-        }
-      }
-      break;
-    case ToolCmd::Size:
-      break;
-    default:
-      break;
+    if(mCurrentToolType == ToolType::None)
+      return;
+
+    if(event.GetButton() == wxMOUSE_BTN_LEFT) {
+      GetTool().Start(event.GetPosition());
     }
+
     Refresh();
   }
 
   void CMainWindow::OnCanvasMouseMove(wxMouseEvent & event) {
     mDrag.mEnd = event.GetPosition();
 
-    switch(mCmd) {
-    case ToolCmd::None:
-      break;
-    case ToolCmd::CreateShape:
-      if(mDrag.mIsDragging && mDrag.mButton == wxMOUSE_BTN_LEFT) {
-        GetEditor()->SetData(mDrag);
-        Refresh();
-      }
-      break;
-    case ToolCmd::Move:
-      if(mDrag.mIsDragging && mCurrentShape) {
-        mCurrentShape->Move(event.GetPosition() - mDrag.mLast);
-        GetEditor()->SetData(mCurrentShape.get());
-        Refresh();
-      }
-      else {
-        if(FindShapeOnPoint(event.GetPosition(), 1.0f)) {
-          SetCursor(wxCURSOR_SIZING);
-        }
-        else {
-          SetCursor(wxCURSOR_DEFAULT);
-        }
-      }
-      break;
-    case ToolCmd::Size:
-      break;
-    default:
-      break;
+    if(mCurrentToolType != ToolType::None) {
+      auto shape = FindShapeOnPoint(event.GetPosition(), 2.0f);
+      auto cursor = GetTool().OnShapeHover(shape, event.GetPosition());
+      SetCursor(cursor);
+
+      GetTool().Update(event.GetPosition());
+
+      Refresh();
     }
+
     mDrag.mLast = event.GetPosition();
   }
 
@@ -211,20 +172,10 @@ namespace jd {
   }
 
   void CMainWindow::OnShapeCreateButtonClicked(wxCommandEvent & event) {
-    switch(mCmd) {
-    case ToolCmd::None:
-      break;
-    case ToolCmd::CreateShape:
-      mShapes.push_back(GetEditor()->CreateShape());
-      break;
-    case ToolCmd::Move:
-    case ToolCmd::Size:
-      if(mCurrentShape && mCurrentShapeType != ShapeType::None) {
-        GetEditor()->SetChanges(mCurrentShape);
-      }
-      break;
-    default:
-      break;
+    GetTool().Start(wxPoint());
+    auto shapes = GetTool().Finish();
+    for(auto& shape : shapes) {
+      mShapes.push_back(shape);
     }
     Refresh();
   }

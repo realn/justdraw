@@ -9,17 +9,17 @@
 #include "JDShapeEditors.h"
 
 namespace jd {
-  CShapeEditor::CShapeEditor(wxWindow * parent, int buttonId) 
-    : wxPanel(parent), mConfirmButtonId(buttonId)
+  CShapeEditor::CShapeEditor(wxWindow * parent) 
+    : wxPanel(parent)
   {
-    mConfirmButton = new wxButton(this, mConfirmButtonId, L"Confirm");
+    mConfirmButton = new wxButton(this, wxID_ANY, L"Confirm");
   }
 
   CShapeEditor::~CShapeEditor() {}
 
 
-  CLineShapeEditor::CLineShapeEditor(wxWindow * parent, int buttonId)
-    : CShapeEditor(parent, buttonId)
+  CLineShapeEditor::CLineShapeEditor(wxWindow * parent)
+    : CShapeEditor(parent)
   {
     auto inputSize = wxSize(40, 20);
     mPointAX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
@@ -65,8 +65,8 @@ namespace jd {
     }
   }
 
-  void CLineShapeEditor::SetData(CShape * shape) {
-    auto line = dynamic_cast<CLineShape*>(shape);
+  void CLineShapeEditor::SetData(const CShape * shape) {
+    auto line = dynamic_cast<const CLineShape*>(shape);
     if(line) {
       SetPointA(line->GetA());
       SetPointB(line->GetB());
@@ -75,15 +75,6 @@ namespace jd {
       SetPointA(wxPoint());
       SetPointB(wxPoint());
     }
-  }
-
-  void CLineShapeEditor::SetData(CDragContext const & data) {
-    SetPointA(data.mStart);
-    SetPointB(data.mEnd);
-  }
-
-  void CLineShapeEditor::DrawPreview(wxClientDC & dev) const {
-    dev.DrawLine(GetPointA(), GetPointB());
   }
 
   void CLineShapeEditor::SetPointA(wxPoint const & value) {
@@ -106,33 +97,30 @@ namespace jd {
 
 
 
-  //CJDToolRectPanel::CJDToolRectPanel(wxWindow * parent, int buttonId) 
-  //  : CShapeEditor(parent, buttonId)
-  //{}
+  CRectShapeEditor::CRectShapeEditor(wxWindow * parent) 
+    : CShapeEditor(parent)
+  {
+    auto inSize = wxSize(40, 20);
+    mOriginX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inSize);
+    mOriginY = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inSize);
+    mSizeW = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inSize);
+    mSizeH = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inSize);
 
-  //CJDToolRectPanel::~CJDToolRectPanel() {}
+    auto origin = new wxStaticBoxSizer(wxHORIZONTAL, this, L"Origin");
+    origin->Add(new wxStaticText(this, wxID_ANY, L"X: "));
+    origin->Add(mOriginX);
+    origin->Add(new wxStaticText(this, wxID_ANY, L"Y: "));
+    origin->Add(mOriginY);
+  }
 
-  //std::shared_ptr<CShape> CJDToolRectPanel::CreateShape() {
-  //  return std::shared_ptr<CShape>();
-  //}
+  CRectShapeEditor::~CRectShapeEditor() {}
 
-  //void CJDToolRectPanel::SetChanges(std::shared_ptr<CShape> shape) const {}
+  std::shared_ptr<CShape> CRectShapeEditor::CreateShape() {
+    return std::shared_ptr<CShape>();
+  }
 
-  //void CJDToolRectPanel::SetData(CShape * shape) {}
+  void CRectShapeEditor::SetChanges(std::shared_ptr<CShape> shape) const {}
 
-
-  //CJDToolCirclePanel::CJDToolCirclePanel(wxWindow * parent, int buttonId) 
-  //  : CShapeEditor(parent, buttonId)
-  //{}
-
-  //CJDToolCirclePanel::~CJDToolCirclePanel() {}
-
-  //std::shared_ptr<CShape> CJDToolCirclePanel::CreateShape() {
-  //  return std::shared_ptr<CShape>();
-  //}
-
-  //void CJDToolCirclePanel::SetChanges(std::shared_ptr<CShape> shape) const {}
-
-  //void CJDToolCirclePanel::SetData(CShape * shape) {}
+  void CRectShapeEditor::SetData(const CShape * shape) {}
 
 }

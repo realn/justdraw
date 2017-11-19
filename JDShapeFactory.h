@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 namespace jd {
   class CShape;
 
@@ -8,7 +10,7 @@ namespace jd {
     IShapeFactory() {}
     virtual ~IShapeFactory() {}
 
-    virtual CShape* Create() const = 0;
+    virtual std::shared_ptr<CShape> Create() const = 0;
   };
 
   template<typename _Type>
@@ -19,7 +21,7 @@ namespace jd {
     CShapeFactory() {}
     virtual ~CShapeFactory() {}
 
-    virtual CShape* Create() const override { return new _Type(); }
+    virtual std::shared_ptr<CShape> Create() const override { return std::make_shared<_Type>(); }
   };
 
 }

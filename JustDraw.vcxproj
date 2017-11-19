@@ -136,6 +136,7 @@
     <ClCompile Include="JDLayer.cpp" />
     <ClCompile Include="JDShape.cpp" />
     <ClCompile Include="JDShapeEditors.cpp" />
+    <ClCompile Include="JDShapeTools.cpp" />
     <ClCompile Include="MainWindow.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

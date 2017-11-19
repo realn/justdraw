@@ -14,10 +14,12 @@ namespace jd {
   class CShape;
   class IShapeFactory;
   class CShapeEditor;
+  class CShapeTool;
 
   using ShapeFactoryMapT = std::map<ShapeType, std::shared_ptr<IShapeFactory>>;
   using ShapeVecT = std::vector<std::shared_ptr<CShape>>;
   using EditorMapT = std::map<ShapeType, CShapeEditor*>;
+  using ToolMapT = std::map<ToolType, std::shared_ptr<CShapeTool>>;
 
   class CMainWindow
     : public wxFrame {
@@ -25,11 +27,11 @@ namespace jd {
     ShapeFactoryMapT mShapeFactories;
     ShapeVecT mShapes;
     EditorMapT mEditors;
+    ToolMapT mTools;
 
-    ToolCmd mCmd = ToolCmd::None;
-
+    ToolType mCurrentToolType = ToolType::None;
     ShapeType mCurrentShapeType = ShapeType::None;
-    std::shared_ptr<CShape> mCurrentShape;
+
     wxPanel* mCanvas = nullptr;
     CDragContext mDrag;
 
@@ -40,7 +42,8 @@ namespace jd {
   private:
     void DrawShapes(wxClientDC& dev);
     std::shared_ptr<CShape> FindShapeOnPoint(wxPoint const& point, float range) const;
-    CShapeEditor* GetEditor() const { return mEditors.at(mCurrentShapeType); }
+    CShapeEditor& GetEditor() const { return *mEditors.at(mCurrentShapeType); }
+    CShapeTool& GetTool() const { return *mTools.at(mCurrentToolType); }
 
     void OnToolbarButtonClicked(wxCommandEvent& event);
     void OnCanvasMouseUp(wxMouseEvent& event);

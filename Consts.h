@@ -7,9 +7,9 @@ enum class ShapeType {
   Circle = 3,
 };
 
-enum class ToolCmd {
+enum class ToolType {
   None = 0,
-  CreateShape,
+  Create,
   Move,
   Size
 };

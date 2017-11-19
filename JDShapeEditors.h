@@ -13,19 +13,16 @@ namespace jd {
     : public wxPanel {
   protected:
     wxButton* mConfirmButton = nullptr;
-    int mConfirmButtonId;
 
   public:
-    CShapeEditor(wxWindow* parent, int buttonId);
+    CShapeEditor(wxWindow* parent);
     virtual ~CShapeEditor();
 
     wxButton* GetConfirmButton() const { return mConfirmButton; }
 
     virtual std::shared_ptr<CShape> CreateShape() = 0;
     virtual void SetChanges(std::shared_ptr<CShape> shape) const = 0;
-    virtual void SetData(CShape* shape) = 0;
-    virtual void SetData(CDragContext const& data) = 0;
-    virtual void DrawPreview(wxClientDC& dev) const = 0;
+    virtual void SetData(const CShape* shape) = 0;
   };
 
   class CLineShapeEditor
@@ -37,15 +34,13 @@ namespace jd {
     wxTextCtrl* mPointBY = nullptr;
 
   public:
-    CLineShapeEditor(wxWindow* parent, int buttonId);
+    CLineShapeEditor(wxWindow* parent);
     virtual ~CLineShapeEditor();
 
     // Inherited via CShapeEditor
     virtual std::shared_ptr<CShape> CreateShape() override;
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
-    virtual void SetData(CShape* shape) override;
-    virtual void SetData(CDragContext const& data) override;
-    virtual void DrawPreview(wxClientDC& dev) const override;
+    virtual void SetData(const CShape* shape) override;
 
   private:
     void SetPointA(wxPoint const& value);
@@ -55,27 +50,24 @@ namespace jd {
     wxPoint GetPointB() const;
   };
 
-  //class CJDToolRectPanel
-  //  : public CShapeEditor {
-  //public:
-  //  CJDToolRectPanel(wxWindow* parent, int buttonId);
-  //  virtual ~CJDToolRectPanel();
+  class CRectShapeEditor
+    : public CShapeEditor {
+  protected:
+    wxTextCtrl* mOriginX = nullptr;
+    wxTextCtrl* mOriginY = nullptr;
+    wxTextCtrl* mSizeW = nullptr;
+    wxTextCtrl* mSizeH = nullptr;
 
-  //  // Inherited via CShapeEditor
-  //  virtual std::shared_ptr<CShape> CreateShape() override;
-  //  virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
-  //  virtual void SetData(CShape * shape) override;
-  //};
+  public:
+    CRectShapeEditor(wxWindow* parent);
+    virtual ~CRectShapeEditor();
 
-  //class CJDToolCirclePanel
-  //  : public CShapeEditor {
-  //public:
-  //  CJDToolCirclePanel(wxWindow* parent, int buttonId);
-  //  virtual ~CJDToolCirclePanel();
 
-  //  // Inherited via CShapeEditor
-  //  virtual std::shared_ptr<CShape> CreateShape() override;
-  //  virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
-  //  virtual void SetData(CShape * shape) override;
-  //};
+    // Inherited via CShapeEditor
+    virtual std::shared_ptr<CShape> CreateShape() override;
+
+    virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
+
+    virtual void SetData(const CShape * shape) override;
+  };
 }

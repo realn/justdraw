@@ -98,7 +98,6 @@ namespace jd {
     virtual void Draw(wxClientDC & dc) override;
 
     virtual void SetStartPoint(wxPoint const & point) override;
-
     virtual void SetEndPoint(wxPoint const & point) override;
 
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
