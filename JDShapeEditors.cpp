@@ -63,8 +63,8 @@ namespace jd {
     }
   }
 
-  void CLineShapeEditor::SetData(const CShape * shape) {
-    auto line = dynamic_cast<const CLineShape*>(shape);
+  void CLineShapeEditor::SetData(const std::shared_ptr<CShape> shape) {
+    auto line = std::dynamic_pointer_cast<CLineShape>(shape);
     if(line) {
       SetPointA(line->GetA());
       SetPointB(line->GetB());
@@ -119,6 +119,6 @@ namespace jd {
 
   void CRectShapeEditor::SetChanges(std::shared_ptr<CShape> shape) const {}
 
-  void CRectShapeEditor::SetData(const CShape * shape) {}
+  void CRectShapeEditor::SetData(const std::shared_ptr<CShape> shape) {}
 
 }

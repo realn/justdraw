@@ -22,7 +22,7 @@ namespace jd {
 
     virtual std::shared_ptr<CShape> CreateShape() = 0;
     virtual void SetChanges(std::shared_ptr<CShape> shape) const = 0;
-    virtual void SetData(const CShape* shape) = 0;
+    virtual void SetData(const std::shared_ptr<CShape> shape) = 0;
   };
 
   class CLineShapeEditor
@@ -40,7 +40,7 @@ namespace jd {
     // Inherited via CShapeEditor
     virtual std::shared_ptr<CShape> CreateShape() override;
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
-    virtual void SetData(const CShape* shape) override;
+    virtual void SetData(const std::shared_ptr<CShape> shape) override;
 
   private:
     void SetPointA(wxPoint const& value);
@@ -68,6 +68,6 @@ namespace jd {
 
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
 
-    virtual void SetData(const CShape * shape) override;
+    virtual void SetData(const std::shared_ptr<CShape> shape) override;
   };
 }

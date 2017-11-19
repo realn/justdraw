@@ -11,3 +11,13 @@ inline std::shared_ptr<_wxType> wxmake_shared(Args&&... args) {
     else delete obj;
   });
 }
+
+template<typename _Enum>
+inline int wxid(_Enum value) {
+  return static_cast<int>(value);
+}
+
+template<typename _Enum>
+inline _Enum wxid(int value) {
+  return static_cast<_Enum>(value);
+}

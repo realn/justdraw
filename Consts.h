@@ -9,7 +9,9 @@ enum class ShapeType {
 
 enum class ToolType {
   None = 0,
-  Create,
+  CreateLine,
+  CreateRect,
+  CreateCircle,
   Move,
   Size
 };

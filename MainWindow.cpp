@@ -15,14 +15,6 @@
 #include "MainWindow.h"
 
 namespace jd {
-  enum JD_COMMANDS {
-    JD_CMD_LINE = ShapeType::Line,
-    JD_CMD_RECT = ShapeType::Rect,
-    JD_CMD_CIRCLE = ShapeType::Circle,
-    JD_CMD_MOVE,
-    JD_CMD_SIZE
-  };
-
   CMainWindow::CMainWindow() 
     : wxFrame(nullptr, wxID_ANY, "JustDraw")
   {
@@ -33,12 +25,12 @@ namespace jd {
     wxBitmap whiteBitmap(16, 16);
 
     auto toolbar = CreateToolBar();
-    toolbar->AddTool(JD_CMD_LINE, L"Line", whiteBitmap);
-    toolbar->AddTool(JD_CMD_RECT, L"Rect", whiteBitmap);
-    toolbar->AddTool(JD_CMD_CIRCLE, L"Circle", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::CreateLine), L"Line", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::CreateRect), L"Rect", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::CreateCircle), L"Circle", whiteBitmap);
     toolbar->AddSeparator();
-    toolbar->AddTool(JD_CMD_MOVE, L"Move", whiteBitmap);
-    toolbar->AddTool(JD_CMD_SIZE, L"Size", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::Move), L"Move", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::Size), L"Size", whiteBitmap);
     toolbar->Realize();
     
     mCanvas = new wxPanel(this);
@@ -66,7 +58,7 @@ namespace jd {
     
     toolbar->Bind(wxEVT_MENU, &CMainWindow::OnToolbarButtonClicked, this);
 
-    mTools[ToolType::Create] = std::make_shared<CCreateShapeTool>(mEditors, mShapeFactories);
+    mTools[ToolType::CreateLine] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Line], mEditors[ShapeType::Line]);
   }
 
   CMainWindow::~CMainWindow() {}
@@ -97,22 +89,9 @@ namespace jd {
     for(auto& item : mEditors) { item.second->Hide(); }
     for(auto& item : mTools) { item.second->Cancel(); }
 
-    switch(event.GetId()) {
-    case JD_CMD_LINE:
-    case JD_CMD_RECT:
-    case JD_CMD_CIRCLE:
-      mCurrentToolType = ToolType::Create;
-      GetTool().Prepare(static_cast<ShapeType>(event.GetId()));
-      break;
+    mCurrentToolType = wxid<ToolType>(event.GetId());
+    GetTool().Prepare();
 
-    case JD_CMD_MOVE:
-      mCurrentToolType = ToolType::Move;
-      GetTool().Prepare(ShapeType::None);
-      break;
-
-    default:
-      break;
-    }
     GetSizer()->Layout();
   }
 

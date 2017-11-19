@@ -5,23 +5,18 @@
 #include "JDShapeTools.h"
 
 namespace jd {
-  CShapeTool::CShapeTool(EditorMapT& editors, FactoryMapT& factories)
-    : mEditors(editors), mFactories(factories)
-  {}
+  CShapeTool::CShapeTool() {}
 
   CShapeTool::~CShapeTool() {}
 
-  CCreateShapeTool::CCreateShapeTool(EditorMapT& editors, FactoryMapT& factories)
-    : CShapeTool(editors, factories)
+  CCreateShapeTool::CCreateShapeTool(std::shared_ptr<IShapeFactory> factory, std::shared_ptr<CShapeEditor> editor)
+    : mFactory(factory), mEditor(editor)
   {}
 
   CCreateShapeTool::~CCreateShapeTool() {}
 
-  void CCreateShapeTool::Prepare(ShapeType const type) {
-    mType = type;
-    if(mType != ShapeType::None) {
-      GetEditor(mType).Show();
-    }
+  void CCreateShapeTool::Prepare() {
+    mEditor->Show();
   }
 
   wxCursor CCreateShapeTool::OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) {
@@ -29,26 +24,23 @@ namespace jd {
   }
 
   void CCreateShapeTool::Start(wxPoint const& pt) {
-    if(mType != ShapeType::None) {
-      mShape = GetFactory(mType).Create();
-      mShape->SetStartPoint(pt);
-      GetEditor(mType).Show();
-      mWasUpdate = false;
-    }
+    mShape = mFactory->Create();
+    mShape->SetStartPoint(pt);
+    mWasUpdate = false;
   }
 
   void CCreateShapeTool::Update(wxPoint const & pt) {
-    if(mShape && mType != ShapeType::None) {
+    if(mShape) {
       mShape->SetEndPoint(pt);
-      GetEditor(mType).SetData(mShape.get());
+      mEditor->SetData(mShape);
       mWasUpdate = true;
     }
   }
 
   ShapeVecT CCreateShapeTool::Finish() {
     auto result = ShapeVecT();
-    if(mShape && mType != ShapeType::None) {
-      GetEditor(mType).SetChanges(mShape);
+    if(mShape) {
+      mEditor->SetChanges(mShape);
       result.push_back(mShape);
       mShape.reset();
     }
