@@ -48,6 +48,7 @@ namespace jd {
     
     mEditors[ShapeType::Line] = wxmake_shared<CLineShapeEditor>(this);
     mEditors[ShapeType::Rect] = wxmake_shared<CRectShapeEditor>(this);
+    mEditors[ShapeType::Circle] = wxmake_shared<CCircleShapeEditor>(this);
 
     for(auto& item : mEditors) {
       item.second->GetConfirmButton().Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);
@@ -61,6 +62,7 @@ namespace jd {
 
     mTools[ToolType::CreateLine] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Line], mEditors[ShapeType::Line]);
     mTools[ToolType::CreateRect] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Rect], mEditors[ShapeType::Rect]);
+    mTools[ToolType::CreateCircle] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Circle], mEditors[ShapeType::Circle]);
   }
 
   CMainWindow::~CMainWindow() {}

@@ -51,4 +51,19 @@ namespace jd {
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
     virtual void SetData(const std::shared_ptr<CShape> shape) override;
   };
+
+  class CCircleShapeEditor
+    : public CShapeEditor {
+  protected:
+    std::shared_ptr<CLabelVec2Input<wxPoint>> mOrigin;
+    std::shared_ptr<CLabelValueInput<int>> mRadius;
+
+  public:
+    CCircleShapeEditor(wxWindow* parent);
+    virtual ~CCircleShapeEditor();
+
+    // Inherited via CShapeEditor
+    virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
+    virtual void SetData(const std::shared_ptr<CShape> shape) override;
+  };
 }

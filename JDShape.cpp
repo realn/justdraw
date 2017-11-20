@@ -5,6 +5,15 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/closest_point.hpp>
 
+namespace std {
+  inline wxPoint abs(wxPoint const& value) {
+    return wxPoint(abs(value.x), abs(value.y));
+  }
+  inline wxPoint min(wxPoint const& left, wxPoint const& right) {
+    return wxPoint(min(left.x, right.x), min(left.y, right.y));
+  }
+}
+
 namespace jd {
   glm::vec2 convert(wxPoint const& p) { return glm::vec2(p.x, p.y); }
   wxPoint convert(glm::vec2 const& p) { return wxPoint(p.x, p.y); }
@@ -55,10 +64,9 @@ namespace jd {
   }
 
   void CRectShape::SetByPoints(wxPoint const & pt1, wxPoint const & pt2) {
-    auto size = pt2 - pt1;
-    mSize.Set(std::abs(size.x), std::abs(size.y));
-    mOrigin.x = std::min(pt1.x, pt2.x);
-    mOrigin.y = std::min(pt1.y, pt2.y);
+    auto size = std::abs(pt2 - pt1);
+    mSize.Set(size.x, size.y);
+    mOrigin = std::min(pt1, pt2);
   }
 
   bool CRectShape::IsInMoveBounds(wxPoint const & point, float range) const {
@@ -81,10 +89,9 @@ namespace jd {
   }
 
   void CCircleShape::SetByPoints(wxPoint const & pt1, wxPoint const & pt2) {
-    auto size = pt2 - pt1;
-    mOrigin.x = std::min(pt1.x, pt2.x);
-    mOrigin.y = std::min(pt1.y, pt2.y);
-    mRadius = std::min(std::abs(size.x), std::abs(size.y)) / 2;
+    auto size = std::abs(pt2 - pt1);
+    mOrigin = std::min(pt1, pt2) + size / 2;
+    mRadius = std::min(size.x, size.y) / 2;
   }
 
   bool CCircleShape::IsInMoveBounds(wxPoint const & point, float range) const {

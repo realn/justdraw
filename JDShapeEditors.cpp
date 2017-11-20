@@ -91,4 +91,38 @@ namespace jd {
       mSize->SetValue(wxSize());
     }
   }
+
+  CCircleShapeEditor::CCircleShapeEditor(wxWindow * parent) 
+    : CShapeEditor(parent)
+  {
+    auto inSize = wxSize(40, 20);
+    mOrigin = wxmake_shared<CLabelVec2Input<wxPoint>>(this, L"Origin", L"X: ", L"Y: ", wxPoint(), inSize);
+    mRadius = wxmake_shared<CLabelValueInput<int>>(this, L"Radius: ", 0, inSize);
+
+    auto sizer = new wxStaticBoxSizer(wxVERTICAL, this, L"Circle");
+    sizer->Add(mOrigin.get());
+    sizer->Add(mRadius.get());
+    sizer->Add(mConfirmButton.get());
+    SetSizerAndFit(sizer);
+  }
+
+  CCircleShapeEditor::~CCircleShapeEditor() {}
+  void CCircleShapeEditor::SetChanges(std::shared_ptr<CShape> shape) const {
+    auto circle = std::dynamic_pointer_cast<CCircleShape>(shape);
+    if(circle) {
+      circle->Set(mOrigin->GetValue(), mRadius->GetValue());
+    }
+  }
+
+  void CCircleShapeEditor::SetData(const std::shared_ptr<CShape> shape) {
+    auto circle = std::dynamic_pointer_cast<CCircleShape>(shape);
+    if(circle) {
+      mOrigin->SetValue(circle->GetOrigin());
+      mRadius->SetValue(circle->GetRadius());
+    }
+    else {
+      mOrigin->SetValue(wxPoint());
+      mRadius->SetValue(0);
+    }
+  }
 }
