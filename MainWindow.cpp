@@ -63,6 +63,7 @@ namespace jd {
     mTools[ToolType::CreateLine] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Line], mEditors[ShapeType::Line]);
     mTools[ToolType::CreateRect] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Rect], mEditors[ShapeType::Rect]);
     mTools[ToolType::CreateCircle] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Circle], mEditors[ShapeType::Circle]);
+    mTools[ToolType::Move] = std::make_shared<CMoveShapeTool>(mEditors);
   }
 
   CMainWindow::~CMainWindow() {}
@@ -129,6 +130,7 @@ namespace jd {
 
     if(event.GetButton() == wxMOUSE_BTN_LEFT) {
       GetTool().Start(event.GetPosition());
+      GetSizer()->Layout();
     }
 
     Refresh();

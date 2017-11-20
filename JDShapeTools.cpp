@@ -56,4 +56,75 @@ namespace jd {
       mShape->Draw(dc);
     }
   }
+
+  CMoveShapeTool::CMoveShapeTool(EditorMapT editors) 
+    : mEditors(editors)
+  {}
+
+  CMoveShapeTool::~CMoveShapeTool() {}
+
+  void CMoveShapeTool::Prepare() {
+    mHoverShape.reset();
+    mSelectedShape.reset();
+    mLastPoint = wxPoint();
+  }
+
+  wxCursor CMoveShapeTool::OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) {
+    mHoverShape = shape;
+    if(mHoverShape)
+      return wxCURSOR_SIZING;
+    return wxCURSOR_ARROW;
+  }
+
+  void CMoveShapeTool::Start(wxPoint const & pt) {
+    if(mHoverShape) {
+      mSelectedShape = mHoverShape;
+      for(auto item : mEditors) { item.second->Hide(); }
+      auto editor = GetEditor();
+      editor->Show();
+      mLastPoint = pt;
+    }
+  }
+
+  void CMoveShapeTool::Update(wxPoint const & pt) {
+    if(mSelectedShape) {
+      mSelectedShape->Move(pt - mLastPoint);
+      GetEditor()->SetData(mSelectedShape);
+      mLastPoint = pt;
+    }
+  }
+
+  ShapeVecT CMoveShapeTool::Finish() {
+    if(mSelectedShape) {
+      GetEditor()->SetChanges(mSelectedShape);
+      mSelectedShape.reset();
+    }
+    return ShapeVecT();
+  }
+
+  void CMoveShapeTool::Cancel() {
+    mSelectedShape.reset();
+  }
+
+  void CMoveShapeTool::DrawPreview(wxClientDC & dc) {
+    if(mSelectedShape) {
+      auto brush = wxBrush(*wxBLACK, wxBrushStyle::wxBRUSHSTYLE_SOLID);
+      auto rect = mSelectedShape->GetBoundingRect();
+
+      auto list = std::vector<wxPoint>();
+      list.push_back(rect.GetTopLeft());
+      list.push_back(rect.GetBottomLeft());
+      list.push_back(rect.GetBottomRight());
+      list.push_back(rect.GetTopRight());
+      
+      auto pointList = wxPointList(list.size(), list.data());
+
+      dc.SetBrush(brush);
+      dc.DrawLines(&pointList);
+    }
+  }
+
+  std::shared_ptr<CShapeEditor> CMoveShapeTool::GetEditor() const {
+    return mEditors.at(mSelectedShape->GetType());
+  }
 }

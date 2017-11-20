@@ -17,6 +17,7 @@ namespace jd {
     wxColor GetFillColor() const { return mColor; }
 
     virtual ShapeType GetType() const = 0;
+    virtual wxRect GetBoundingRect() const = 0;
 
     virtual void Draw(wxClientDC& dc) = 0;
 
@@ -43,6 +44,7 @@ namespace jd {
 
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Line; }
+    virtual wxRect GetBoundingRect() const override;
     virtual void Draw(wxClientDC & dc) override;
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
 
@@ -66,6 +68,7 @@ namespace jd {
 
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Rect; }
+    virtual wxRect GetBoundingRect() const override;
     virtual void Draw(wxClientDC & dc) override;
 
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
@@ -90,6 +93,7 @@ namespace jd {
 
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Circle; }
+    virtual wxRect GetBoundingRect() const override;
     virtual void Draw(wxClientDC & dc) override;
 
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;

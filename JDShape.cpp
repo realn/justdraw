@@ -12,6 +12,9 @@ namespace std {
   inline wxPoint min(wxPoint const& left, wxPoint const& right) {
     return wxPoint(min(left.x, right.x), min(left.y, right.y));
   }
+  inline wxPoint max(wxPoint const& left, wxPoint const& right) {
+    return wxPoint(max(left.x, right.x), max(left.y, right.y));
+  }
 }
 
 namespace jd {
@@ -27,6 +30,12 @@ namespace jd {
   {}
 
   CLineShape::~CLineShape() {}
+
+  wxRect CLineShape::GetBoundingRect() const {
+    auto a = std::min(mA, mB);
+    auto b = std::max(mA, mB);
+    return wxRect(a, b);
+  }
 
   void CLineShape::Draw(wxClientDC & dc) {
     dc.SetBrush(mColor);
@@ -58,6 +67,10 @@ namespace jd {
 
   CRectShape::~CRectShape() {}
 
+  wxRect CRectShape::GetBoundingRect() const {
+    return wxRect(mOrigin, mSize);
+  }
+
   void CRectShape::Draw(wxClientDC & dc) {
     dc.SetBrush(mColor);
     dc.DrawRectangle(mOrigin, mSize);
@@ -83,6 +96,12 @@ namespace jd {
   {}
 
   CCircleShape::~CCircleShape() {}
+
+  wxRect CCircleShape::GetBoundingRect() const {
+    auto a = mOrigin - wxPoint(mRadius, mRadius);
+    auto b = mOrigin + wxPoint(mRadius, mRadius);
+    return wxRect(a, b);
+  }
   void CCircleShape::Draw(wxClientDC & dc) {
     dc.SetBrush(mColor);
     dc.DrawCircle(mOrigin, mRadius);
