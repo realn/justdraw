@@ -2,9 +2,8 @@
 
 #include <memory>
 #include <wx/panel.h>
-#include "Controls.h"
 
-class wxTextCtrl;
+#include "Controls.h"
 
 namespace jd {
   class CShape;
@@ -12,15 +11,14 @@ namespace jd {
   class CShapeEditor
     : public wxPanel {
   protected:
-    wxButton* mConfirmButton = nullptr;
+    std::shared_ptr<wxButton> mConfirmButton;
 
   public:
     CShapeEditor(wxWindow* parent);
     virtual ~CShapeEditor();
 
-    wxButton* GetConfirmButton() const { return mConfirmButton; }
+    wxButton& GetConfirmButton() const { return *mConfirmButton; }
 
-    virtual std::shared_ptr<CShape> CreateShape() = 0;
     virtual void SetChanges(std::shared_ptr<CShape> shape) const = 0;
     virtual void SetData(const std::shared_ptr<CShape> shape) = 0;
   };
@@ -28,46 +26,29 @@ namespace jd {
   class CLineShapeEditor
     : public CShapeEditor {
   private:
-    CLabelValueInput<int>* mPointAX = nullptr;
-    CLabelValueInput<int>* mPointAY = nullptr;
-    wxTextCtrl* mPointBX = nullptr;
-    wxTextCtrl* mPointBY = nullptr;
+    std::shared_ptr<CLabelVec2Input<wxPoint>> mPointA;
+    std::shared_ptr<CLabelVec2Input<wxPoint>> mPointB;
 
   public:
     CLineShapeEditor(wxWindow* parent);
     virtual ~CLineShapeEditor();
 
     // Inherited via CShapeEditor
-    virtual std::shared_ptr<CShape> CreateShape() override;
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
     virtual void SetData(const std::shared_ptr<CShape> shape) override;
-
-  private:
-    void SetPointA(wxPoint const& value);
-    void SetPointB(wxPoint const& value);
-
-    wxPoint GetPointA() const;
-    wxPoint GetPointB() const;
   };
 
   class CRectShapeEditor
     : public CShapeEditor {
   protected:
-    wxTextCtrl* mOriginX = nullptr;
-    wxTextCtrl* mOriginY = nullptr;
-    wxTextCtrl* mSizeW = nullptr;
-    wxTextCtrl* mSizeH = nullptr;
+    std::shared_ptr<CLabelVec2Input<wxPoint>> mOrigin;
+    std::shared_ptr<CLabelVec2Input<wxSize>> mSize;
 
   public:
     CRectShapeEditor(wxWindow* parent);
     virtual ~CRectShapeEditor();
 
-
-    // Inherited via CShapeEditor
-    virtual std::shared_ptr<CShape> CreateShape() override;
-
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
-
     virtual void SetData(const std::shared_ptr<CShape> shape) override;
   };
 }

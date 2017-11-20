@@ -24,12 +24,9 @@ namespace jd {
     dc.DrawLine(mA, mB);
   }
 
-  void CLineShape::SetStartPoint(wxPoint const & point) {
-    mA = point;
-  }
-
-  void CLineShape::SetEndPoint(wxPoint const & point) {
-    mB = point;
+  void CLineShape::SetByPoints(wxPoint const & pt1, wxPoint const & pt2) {
+    mA = pt1;
+    mB = pt2;
   }
 
   bool CLineShape::IsInMoveBounds(wxPoint const & point, float range) const {
@@ -57,13 +54,11 @@ namespace jd {
     dc.DrawRectangle(mOrigin, mSize);
   }
 
-  void CRectShape::SetStartPoint(wxPoint const & point) {
-    mOrigin = point;
-  }
-
-  void CRectShape::SetEndPoint(wxPoint const & point) {
-    auto size = point - mOrigin;
+  void CRectShape::SetByPoints(wxPoint const & pt1, wxPoint const & pt2) {
+    auto size = pt2 - pt1;
     mSize.Set(std::abs(size.x), std::abs(size.y));
+    mOrigin.x = std::min(pt1.x, pt2.x);
+    mOrigin.y = std::min(pt1.y, pt2.y);
   }
 
   bool CRectShape::IsInMoveBounds(wxPoint const & point, float range) const {
@@ -85,16 +80,11 @@ namespace jd {
     dc.DrawCircle(mOrigin, mRadius);
   }
 
-  void CCircleShape::SetStartPoint(wxPoint const & point) {
-    mOrigin = point;
-  }
-
-  void CCircleShape::SetEndPoint(wxPoint const & point) {
-    auto size = point - mOrigin;
-    auto x = static_cast<double>(size.x);
-    auto y = static_cast<double>(size.y);
-
-    mRadius = static_cast<int>(std::sqrt(x*x + y*y));
+  void CCircleShape::SetByPoints(wxPoint const & pt1, wxPoint const & pt2) {
+    auto size = pt2 - pt1;
+    mOrigin.x = std::min(pt1.x, pt2.x);
+    mOrigin.y = std::min(pt1.y, pt2.y);
+    mRadius = std::min(std::abs(size.x), std::abs(size.y)) / 2;
   }
 
   bool CCircleShape::IsInMoveBounds(wxPoint const & point, float range) const {

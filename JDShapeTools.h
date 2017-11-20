@@ -39,6 +39,7 @@ namespace jd {
     std::shared_ptr<IShapeFactory> mFactory;
     std::shared_ptr<CShapeEditor> mEditor;
     std::shared_ptr<CShape> mShape;
+    wxPoint mStartPt;
     bool mWasUpdate = false;
 
   public:

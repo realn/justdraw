@@ -12,7 +12,7 @@ namespace jd {
   CShapeEditor::CShapeEditor(wxWindow * parent) 
     : wxPanel(parent)
   {
-    mConfirmButton = new wxButton(this, wxID_ANY, L"Confirm");
+    mConfirmButton = wxmake_shared<wxButton>(this, wxID_ANY, L"Confirm");
   }
 
   CShapeEditor::~CShapeEditor() {}
@@ -22,43 +22,24 @@ namespace jd {
     : CShapeEditor(parent)
   {
     auto inputSize = wxSize(40, 20);
-    mPointAX = new CLabelValueInput<int>(this, L"X: ", 0, inputSize);
-    mPointAY = new CLabelValueInput<int>(this, L"X: ", 0, inputSize);
-    mPointBX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
-    mPointBY = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inputSize);
-
-    auto pointA = new wxStaticBoxSizer(wxHORIZONTAL, this, L"Point A");
-    pointA->Add(mPointAX, 1, wxEXPAND);
-    pointA->Add(mPointAY, 1, wxEXPAND);
-
-    auto pointB = new wxStaticBoxSizer(wxHORIZONTAL, this, L"Point B");
-    pointB->Add(new wxStaticText(this, wxID_ANY, L"X:"));
-    pointB->Add(mPointBX);
-    pointB->Add(new wxStaticText(this, wxID_ANY, L"Y:"));
-    pointB->Add(mPointBY);
+    mPointA = wxmake_shared<CLabelVec2Input<wxPoint>>(this, L"Point A", L"X: ", L"Y: ", wxPoint(), inputSize);
+    mPointB = wxmake_shared<CLabelVec2Input<wxPoint>>(this, L"Point B", L"X: ", L"Y: ", wxPoint(), inputSize);
 
     auto lineTool = new wxStaticBoxSizer(wxVERTICAL, this, L"Line");
-    lineTool->Add(pointA);
-    lineTool->Add(pointB);
-    lineTool->Add(mConfirmButton, wxALIGN_CENTER_HORIZONTAL);
+    lineTool->Add(mPointA.get());
+    lineTool->Add(mPointB.get());
+    lineTool->Add(mConfirmButton.get());
     lineTool->AddStretchSpacer();
-
     SetSizerAndFit(lineTool);
   }
 
   CLineShapeEditor::~CLineShapeEditor() {}
 
-  std::shared_ptr<CShape> CLineShapeEditor::CreateShape() {
-    auto p1 = GetPointA();
-    auto p2 = GetPointB();
-    return std::make_shared<CLineShape>(p1, p2);
-  }
-
   void CLineShapeEditor::SetChanges(std::shared_ptr<CShape> shape) const {
     auto line = std::dynamic_pointer_cast<CLineShape>(shape);
     if(line) {
-      auto p1 = GetPointA();
-      auto p2 = GetPointB();
+      auto p1 = mPointA->GetValue();
+      auto p2 = mPointB->GetValue();
       line->Set(p1, p2);
     }
   }
@@ -66,59 +47,48 @@ namespace jd {
   void CLineShapeEditor::SetData(const std::shared_ptr<CShape> shape) {
     auto line = std::dynamic_pointer_cast<CLineShape>(shape);
     if(line) {
-      SetPointA(line->GetA());
-      SetPointB(line->GetB());
+      mPointA->SetValue(line->GetA());
+      mPointB->SetValue(line->GetB());
     }
     else {
-      SetPointA(wxPoint());
-      SetPointB(wxPoint());
+      mPointA->SetValue(wxPoint());
+      mPointB->SetValue(wxPoint());
     }
   }
-
-  void CLineShapeEditor::SetPointA(wxPoint const & value) {
-    mPointAX->SetValue(value.x);
-    mPointAY->SetValue(value.y);
-  }
-
-  void CLineShapeEditor::SetPointB(wxPoint const & value) {
-    mPointBX->SetValue(wxString::Format(L"%d", value.x));
-    mPointBY->SetValue(wxString::Format(L"%d", value.y));
-  }
-
-  wxPoint CLineShapeEditor::GetPointA() const {
-    return wxPoint(mPointAX->GetValue(), mPointAY->GetValue());
-  }
-
-  wxPoint CLineShapeEditor::GetPointB() const {
-    return wxPoint(wxAtoi(mPointBX->GetValue()), wxAtoi(mPointBY->GetValue()));
-  }
-
 
 
   CRectShapeEditor::CRectShapeEditor(wxWindow * parent) 
     : CShapeEditor(parent)
   {
     auto inSize = wxSize(40, 20);
-    mOriginX = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inSize);
-    mOriginY = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inSize);
-    mSizeW = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inSize);
-    mSizeH = new wxTextCtrl(this, wxID_ANY, L"0", wxDefaultPosition, inSize);
+    mOrigin = wxmake_shared<CLabelVec2Input<wxPoint>>(this, L"Origin", L"X: ", L"Y: ", wxPoint(), inSize);
+    mSize = wxmake_shared<CLabelVec2Input<wxSize>>(this, L"Size", L"W: ", L"H: ", wxSize(), inSize);
 
-    auto origin = new wxStaticBoxSizer(wxHORIZONTAL, this, L"Origin");
-    origin->Add(new wxStaticText(this, wxID_ANY, L"X: "));
-    origin->Add(mOriginX);
-    origin->Add(new wxStaticText(this, wxID_ANY, L"Y: "));
-    origin->Add(mOriginY);
+    auto layout = new wxStaticBoxSizer(wxVERTICAL, this, L"Rect");
+    layout->Add(mOrigin.get());
+    layout->Add(mSize.get());
+    layout->Add(mConfirmButton.get());
+    SetSizerAndFit(layout);
   }
 
   CRectShapeEditor::~CRectShapeEditor() {}
 
-  std::shared_ptr<CShape> CRectShapeEditor::CreateShape() {
-    return std::shared_ptr<CShape>();
+  void CRectShapeEditor::SetChanges(std::shared_ptr<CShape> shape) const {
+    auto rect = std::dynamic_pointer_cast<CRectShape>(shape);
+    if(rect) {
+      rect->Set(mOrigin->GetValue(), mSize->GetValue());
+    }
   }
 
-  void CRectShapeEditor::SetChanges(std::shared_ptr<CShape> shape) const {}
-
-  void CRectShapeEditor::SetData(const std::shared_ptr<CShape> shape) {}
-
+  void CRectShapeEditor::SetData(const std::shared_ptr<CShape> shape) {
+    auto rect = std::dynamic_pointer_cast<CRectShape>(shape);
+    if(rect) {
+      mOrigin->SetValue(rect->GetOrigin());
+      mSize->SetValue(rect->GetSize());
+    }
+    else {
+      mOrigin->SetValue(wxPoint());
+      mSize->SetValue(wxSize());
+    }
+  }
 }

@@ -20,8 +20,7 @@ namespace jd {
 
     virtual void Draw(wxClientDC& dc) = 0;
 
-    virtual void SetStartPoint(wxPoint const& point) = 0;
-    virtual void SetEndPoint(wxPoint const& point) = 0;
+    virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) = 0;
 
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const = 0;
     virtual void Move(wxPoint const& dist) = 0;
@@ -45,8 +44,7 @@ namespace jd {
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Line; }
     virtual void Draw(wxClientDC & dc) override;
-    virtual void SetStartPoint(wxPoint const & point) override;
-    virtual void SetEndPoint(wxPoint const & point) override;
+    virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
 
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;
@@ -70,9 +68,7 @@ namespace jd {
     virtual ShapeType GetType() const override { return ShapeType::Rect; }
     virtual void Draw(wxClientDC & dc) override;
 
-    virtual void SetStartPoint(wxPoint const & point) override;
-
-    virtual void SetEndPoint(wxPoint const & point) override;
+    virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
 
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;
@@ -94,11 +90,9 @@ namespace jd {
 
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Circle; }
-
     virtual void Draw(wxClientDC & dc) override;
 
-    virtual void SetStartPoint(wxPoint const & point) override;
-    virtual void SetEndPoint(wxPoint const & point) override;
+    virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
 
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;

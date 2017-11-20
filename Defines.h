@@ -32,7 +32,15 @@ inline std::string tostr(_Type const& value) {
 }
 
 template<typename _Type>
-inline _Type fromstr(std::string const& value) {
+inline bool fromstr(std::string const& value, _Type& result) {
   auto ss = std::stringstream(value);
+  ss >> result;
+  return !ss.bad();
+}
+
+template<typename _Type>
+inline _Type fromstr(std::string const& value) {
   auto result = _Type();
+  fromstr(value, result);
+  return result;
 }

@@ -47,9 +47,10 @@ namespace jd {
     sizer->Add(mCanvas, 1, wxEXPAND, 0);
     
     mEditors[ShapeType::Line] = wxmake_shared<CLineShapeEditor>(this);
+    mEditors[ShapeType::Rect] = wxmake_shared<CRectShapeEditor>(this);
 
     for(auto& item : mEditors) {
-      item.second->GetConfirmButton()->Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);
+      item.second->GetConfirmButton().Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);
       sizer->Add(item.second.get());
       item.second->Hide();
     }
@@ -59,6 +60,7 @@ namespace jd {
     toolbar->Bind(wxEVT_MENU, &CMainWindow::OnToolbarButtonClicked, this);
 
     mTools[ToolType::CreateLine] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Line], mEditors[ShapeType::Line]);
+    mTools[ToolType::CreateRect] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Rect], mEditors[ShapeType::Rect]);
   }
 
   CMainWindow::~CMainWindow() {}

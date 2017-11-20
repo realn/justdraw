@@ -25,13 +25,13 @@ namespace jd {
 
   void CCreateShapeTool::Start(wxPoint const& pt) {
     mShape = mFactory->Create();
-    mShape->SetStartPoint(pt);
+    mStartPt = pt;
     mWasUpdate = false;
   }
 
   void CCreateShapeTool::Update(wxPoint const & pt) {
     if(mShape) {
-      mShape->SetEndPoint(pt);
+      mShape->SetByPoints(mStartPt, pt);
       mEditor->SetData(mShape);
       mWasUpdate = true;
     }
