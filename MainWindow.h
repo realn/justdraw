@@ -49,6 +49,7 @@ namespace jd {
     void OnCanvasMouseUp(wxMouseEvent& event);
     void OnCanvasMouseDown(wxMouseEvent& event);
     void OnCanvasMouseMove(wxMouseEvent& event);
+    void OnCanvasMouseLeave(wxMouseEvent& event);
     void OnCanvasPaint(wxPaintEvent& event);
     void OnShapeCreateButtonClicked(wxCommandEvent& event);
   };

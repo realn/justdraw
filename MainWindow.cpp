@@ -15,9 +15,8 @@
 #include "MainWindow.h"
 
 namespace jd {
-  CMainWindow::CMainWindow() 
-    : wxFrame(nullptr, wxID_ANY, "JustDraw")
-  {
+  CMainWindow::CMainWindow()
+    : wxFrame(nullptr, wxID_ANY, "JustDraw") {
     mShapeFactories[ShapeType::Line] = std::make_shared<CShapeFactory<CLineShape>>();
     mShapeFactories[ShapeType::Rect] = std::make_shared<CShapeFactory<CRectShape>>();
     mShapeFactories[ShapeType::Circle] = std::make_shared<CShapeFactory<CCircleShape>>();
@@ -32,7 +31,7 @@ namespace jd {
     toolbar->AddTool(wxid(ToolType::Move), L"Move", whiteBitmap);
     toolbar->AddTool(wxid(ToolType::Size), L"Size", whiteBitmap);
     toolbar->Realize();
-    
+
     mCanvas = new wxPanel(this);
     mCanvas->SetDoubleBuffered(true);
     mCanvas->SetBackgroundColour(*wxWHITE);
@@ -41,11 +40,12 @@ namespace jd {
     mCanvas->Bind(wxEVT_LEFT_DOWN, &CMainWindow::OnCanvasMouseDown, this);
     mCanvas->Bind(wxEVT_RIGHT_DOWN, &CMainWindow::OnCanvasMouseDown, this);
     mCanvas->Bind(wxEVT_MOTION, &CMainWindow::OnCanvasMouseMove, this);
+    mCanvas->Bind(wxEVT_LEAVE_WINDOW, &CMainWindow::OnCanvasMouseLeave, this);
     mCanvas->Bind(wxEVT_PAINT, &CMainWindow::OnCanvasPaint, this);
 
     auto sizer = new wxBoxSizer(wxHORIZONTAL);
     sizer->Add(mCanvas, 1, wxEXPAND, 0);
-    
+
     mEditors[ShapeType::Line] = wxmake_shared<CLineShapeEditor>(this);
     mEditors[ShapeType::Rect] = wxmake_shared<CRectShapeEditor>(this);
     mEditors[ShapeType::Circle] = wxmake_shared<CCircleShapeEditor>(this);
@@ -57,7 +57,7 @@ namespace jd {
     }
 
     SetSizer(sizer);
-    
+
     toolbar->Bind(wxEVT_MENU, &CMainWindow::OnToolbarButtonClicked, this);
 
     mTools[ToolType::CreateLine] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Line], mEditors[ShapeType::Line]);
@@ -139,17 +139,23 @@ namespace jd {
   void CMainWindow::OnCanvasMouseMove(wxMouseEvent & event) {
     mDrag.mEnd = event.GetPosition();
 
-    if(mCurrentToolType != ToolType::None) {
-      auto shape = FindShapeOnPoint(event.GetPosition(), 2.0f);
-      auto cursor = GetTool().OnShapeHover(shape, event.GetPosition());
-      SetCursor(cursor);
+    if(mCanvas->GetClientRect().Contains(event.GetPosition())) {
+      if(mCurrentToolType != ToolType::None) {
+        auto shape = FindShapeOnPoint(event.GetPosition(), 2.0f);
+        auto cursor = GetTool().OnShapeHover(shape, event.GetPosition());
+        SetCursor(cursor);
 
-      GetTool().Update(event.GetPosition());
+        GetTool().Update(event.GetPosition());
 
-      Refresh();
+        Refresh();
+      }
     }
 
     mDrag.mLast = event.GetPosition();
+  }
+
+  void CMainWindow::OnCanvasMouseLeave(wxMouseEvent & event) {
+    SetCursor(wxCURSOR_ARROW);
   }
 
   void CMainWindow::OnCanvasPaint(wxPaintEvent & event) {
