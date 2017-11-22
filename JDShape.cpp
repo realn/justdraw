@@ -160,10 +160,10 @@ namespace jd {
   Freedom CCircleShape::GetControlPointFreedom(size_t index) {
     switch(index) {
     case 0: return Freedom::Full;
-    case 1: return Freedom::AxisX;
-    case 2: return Freedom::AxisY;
-    case 3: return Freedom::AxisX;
-    case 4: return Freedom::AxisY;
+    case 1: return Freedom::AxisY;
+    case 2: return Freedom::AxisX;
+    case 3: return Freedom::AxisY;
+    case 4: return Freedom::AxisX;
     default:
       break;
     }
@@ -192,10 +192,10 @@ namespace jd {
   void CCircleShape::MoveControlPoint(size_t index, wxPoint const & dist) {
     switch(index) {
     case 0: mOrigin += dist;
-    case 1: mOrigin.x += dist.x / 2; mRadius -= dist.x / 2;
-    case 2: mOrigin.y += dist.y / 2; mRadius -= dist.y / 2;
-    case 3: mOrigin.x += dist.x / 2; mRadius += dist.x / 2;
-    case 4: mOrigin.y += dist.y / 2; mRadius += dist.y / 2;
+    case 1: mOrigin.y += dist.y / 2; mRadius -= dist.y / 2;
+    case 2: mOrigin.x += dist.x / 2; mRadius -= dist.x / 2;
+    case 3: mOrigin.y += dist.y / 2; mRadius += dist.y / 2;
+    case 4: mOrigin.x += dist.x / 2; mRadius += dist.x / 2;
     default:
       break;
     }
