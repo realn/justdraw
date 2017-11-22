@@ -132,6 +132,7 @@
     <ClInclude Include="JDShapeEditors.h" />
     <ClInclude Include="JDShapeTools.h" />
     <ClInclude Include="MainWindow.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App.cpp" />

@@ -64,6 +64,7 @@ namespace jd {
     mTools[ToolType::CreateRect] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Rect], mEditors[ShapeType::Rect]);
     mTools[ToolType::CreateCircle] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Circle], mEditors[ShapeType::Circle]);
     mTools[ToolType::Move] = std::make_shared<CMoveShapeTool>(mEditors);
+    mTools[ToolType::Size] = std::make_shared<CSizeShapeTool>(mEditors);
   }
 
   CMainWindow::~CMainWindow() {}
@@ -141,7 +142,7 @@ namespace jd {
 
     if(mCanvas->GetClientRect().Contains(event.GetPosition())) {
       if(mCurrentToolType != ToolType::None) {
-        auto shape = FindShapeOnPoint(event.GetPosition(), 2.0f);
+        auto shape = FindShapeOnPoint(event.GetPosition(), 4.0f);
         auto cursor = GetTool().OnShapeHover(shape, event.GetPosition());
         SetCursor(cursor);
 

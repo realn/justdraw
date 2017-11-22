@@ -80,4 +80,31 @@ namespace jd {
   private:
     std::shared_ptr<CShapeEditor> GetEditor() const;
   };
+
+  class CSizeShapeTool
+    : public CShapeTool {
+  public:
+    EditorMapT mEditors;
+    std::shared_ptr<CShape> mHoverShape;
+    std::shared_ptr<CShape> mSelectedShape;
+    wxPoint mLastPoint;
+    size_t mLastIndex;
+
+  public:
+    CSizeShapeTool(EditorMapT editors);
+    virtual ~CSizeShapeTool();
+
+    // Inherited via CShapeTool
+    virtual void Prepare() override;
+    virtual wxCursor OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) override;
+    virtual void Start(wxPoint const & pt) override;
+    virtual void Update(wxPoint const & pt) override;
+    virtual ShapeVecT Finish() override;
+    virtual void Cancel() override;
+    virtual void DrawPreview(wxClientDC & dc) override;
+
+  private:
+    std::shared_ptr<CShapeEditor> GetEditor() const;
+    void DrawPoints(wxClientDC& dc, PointVecT const& points) const;
+  };
 }

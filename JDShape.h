@@ -1,10 +1,13 @@
 #pragma once
 
+#include <vector>
 #include <wx/dcclient.h>
 
 #include "Consts.h"
 
 namespace jd {
+  using PointVecT = std::vector<wxPoint>;
+
   class CShape {
   protected:
     wxColor mColor;
@@ -18,13 +21,14 @@ namespace jd {
 
     virtual ShapeType GetType() const = 0;
     virtual wxRect GetBoundingRect() const = 0;
+    virtual PointVecT GetControlPoints() const = 0;
+    virtual Freedom GetControlPointFreedom(size_t index) = 0;
 
     virtual void Draw(wxClientDC& dc) = 0;
-
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) = 0;
-
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const = 0;
     virtual void Move(wxPoint const& dist) = 0;
+    virtual void MoveControlPoint(size_t index, wxPoint const& dist) = 0;
   };
 
   class CLineShape 
@@ -45,11 +49,14 @@ namespace jd {
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Line; }
     virtual wxRect GetBoundingRect() const override;
+    virtual PointVecT GetControlPoints() const override;
+    virtual Freedom GetControlPointFreedom(size_t index) override;
+
     virtual void Draw(wxClientDC & dc) override;
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
-
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;
+    virtual void MoveControlPoint(size_t index, wxPoint const& dist) override;
   };
 
   class CRectShape
@@ -69,12 +76,14 @@ namespace jd {
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Rect; }
     virtual wxRect GetBoundingRect() const override;
+    virtual PointVecT GetControlPoints() const override;
+    virtual Freedom GetControlPointFreedom(size_t index) override;
+
     virtual void Draw(wxClientDC & dc) override;
-
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
-
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;
+    virtual void MoveControlPoint(size_t index, wxPoint const& dist) override;
   };
 
   class CCircleShape
@@ -94,11 +103,13 @@ namespace jd {
     // Inherited via CShape
     virtual ShapeType GetType() const override { return ShapeType::Circle; }
     virtual wxRect GetBoundingRect() const override;
+    virtual PointVecT GetControlPoints() const override;
+    virtual Freedom GetControlPointFreedom(size_t index) override;
+
     virtual void Draw(wxClientDC & dc) override;
-
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
-
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;
+    virtual void MoveControlPoint(size_t index, wxPoint const& dist) override;
   };
 }
