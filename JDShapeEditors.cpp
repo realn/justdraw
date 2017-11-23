@@ -4,6 +4,7 @@
 #include <wx/button.h>
 #include <wx/stattext.h>
 
+#include "Utils.h"
 #include "Controls.h"
 #include "JDShape.h"
 #include "JDShapeEditors.h"
@@ -22,8 +23,11 @@ namespace jd {
     : CShapeEditor(parent)
   {
     auto inputSize = wxSize(40, 20);
-    mPointA = wxmake_shared<CLabelVec2Input<wxPoint>>(this, L"Point A", L"X: ", L"Y: ", wxPoint(), inputSize);
-    mPointB = wxmake_shared<CLabelVec2Input<wxPoint>>(this, L"Point B", L"X: ", L"Y: ", wxPoint(), inputSize);
+    auto labels = toarray<2, wxString>({L"X: ", L"Y: "});
+    mPointA = 
+      wxmake_shared<CLabelVecInput<wxPoint>>(this, L"Point A", labels, wxPoint(), inputSize);
+    mPointB = 
+      wxmake_shared<CLabelVecInput<wxPoint>>(this, L"Point B", labels, wxPoint(), inputSize);
 
     auto lineTool = new wxStaticBoxSizer(wxVERTICAL, this, L"Line");
     lineTool->Add(mPointA.get());
@@ -61,8 +65,10 @@ namespace jd {
     : CShapeEditor(parent)
   {
     auto inSize = wxSize(40, 20);
-    mOrigin = wxmake_shared<CLabelVec2Input<wxPoint>>(this, L"Origin", L"X: ", L"Y: ", wxPoint(), inSize);
-    mSize = wxmake_shared<CLabelVec2Input<wxSize>>(this, L"Size", L"W: ", L"H: ", wxSize(), inSize);
+    mOrigin = 
+      wxmake_shared<CLabelVecInput<wxPoint>>(this, L"Origin", toarray<2, wxString>({L"X: ", L"Y: "}), wxPoint(), inSize);
+    mSize = 
+      wxmake_shared<CLabelVecInput<wxSize>>(this, L"Size", toarray<2, wxString>({L"W: ", L"H: "}), wxSize(), inSize);
 
     auto layout = new wxStaticBoxSizer(wxVERTICAL, this, L"Rect");
     layout->Add(mOrigin.get());
@@ -96,7 +102,8 @@ namespace jd {
     : CShapeEditor(parent)
   {
     auto inSize = wxSize(40, 20);
-    mOrigin = wxmake_shared<CLabelVec2Input<wxPoint>>(this, L"Origin", L"X: ", L"Y: ", wxPoint(), inSize);
+    mOrigin = 
+      wxmake_shared<CLabelVecInput<wxPoint>>(this, L"Origin", toarray<2, wxString>({L"X: ", L"Y: "}), wxPoint(), inSize);
     mRadius = wxmake_shared<CLabelValueInput<int>>(this, L"Radius: ", 0, inSize);
 
     auto sizer = new wxStaticBoxSizer(wxVERTICAL, this, L"Circle");

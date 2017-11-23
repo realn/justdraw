@@ -26,8 +26,8 @@ namespace jd {
   class CLineShapeEditor
     : public CShapeEditor {
   private:
-    std::shared_ptr<CLabelVec2Input<wxPoint>> mPointA;
-    std::shared_ptr<CLabelVec2Input<wxPoint>> mPointB;
+    std::shared_ptr<CLabelVecInput<wxPoint>> mPointA;
+    std::shared_ptr<CLabelVecInput<wxPoint>> mPointB;
 
   public:
     CLineShapeEditor(wxWindow* parent);
@@ -41,8 +41,8 @@ namespace jd {
   class CRectShapeEditor
     : public CShapeEditor {
   protected:
-    std::shared_ptr<CLabelVec2Input<wxPoint>> mOrigin;
-    std::shared_ptr<CLabelVec2Input<wxSize>> mSize;
+    std::shared_ptr<CLabelVecInput<wxPoint>> mOrigin;
+    std::shared_ptr<CLabelVecInput<wxSize>> mSize;
 
   public:
     CRectShapeEditor(wxWindow* parent);
@@ -55,7 +55,7 @@ namespace jd {
   class CCircleShapeEditor
     : public CShapeEditor {
   protected:
-    std::shared_ptr<CLabelVec2Input<wxPoint>> mOrigin;
+    std::shared_ptr<CLabelVecInput<wxPoint>> mOrigin;
     std::shared_ptr<CLabelValueInput<int>> mRadius;
 
   public:
@@ -66,4 +66,5 @@ namespace jd {
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
     virtual void SetData(const std::shared_ptr<CShape> shape) override;
   };
+
 }

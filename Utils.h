@@ -2,6 +2,9 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
+#include <array>
+#include <vector>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/closest_point.hpp>
 
@@ -22,4 +25,13 @@ namespace std {
 namespace jd {
   inline glm::vec2 convert(wxPoint const& p) { return glm::vec2(p.x, p.y); }
   inline wxPoint convert(glm::vec2 const& p) { return wxPoint(p.x, p.y); }
+
+  template<size_t _Size, class _Type>
+  inline std::array<_Type, _Size> toarray(std::vector<_Type> const& vec) {
+    auto result = std::array<_Type, _Size>();
+    for(auto i = size_t(0); i < _Size && i < vec.size(); i++) {
+      result[i] = vec[i];
+    }
+    return result;
+  }
 }
