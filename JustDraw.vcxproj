@@ -124,6 +124,7 @@
     <ClInclude Include="Consts.h" />
     <ClInclude Include="Controls.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="JDColorEditor.h" />
     <ClInclude Include="JDDocument.h" />
     <ClInclude Include="JDDragContext.h" />
     <ClInclude Include="JDLayer.h" />
@@ -137,6 +138,7 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Controls.cpp" />
+    <ClCompile Include="JDColorEditor.cpp" />
     <ClCompile Include="JDLayer.cpp" />
     <ClCompile Include="JDShape.cpp" />
     <ClCompile Include="JDShapeEditors.cpp" />
