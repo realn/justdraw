@@ -34,4 +34,25 @@ namespace jd {
     }
     return result;
   }
+
+  class CEventLock {
+  private:
+    bool mLock = false;
+  public:
+    void lock() { mLock = true; }
+    void unlock() { mLock = false; }
+    operator bool() const { return mLock; }
+    bool operator!() const { return !mLock; }
+  };
+
+  class CEventLockGuard {
+  private:
+    CEventLock* mLock = nullptr;
+  public:
+    CEventLockGuard(CEventLock& lock) : mLock(&lock) { mLock->lock(); }
+    CEventLockGuard(CEventLockGuard&&) = default;
+    ~CEventLockGuard() { if(mLock) mLock->unlock(); }
+  };
+
+  inline CEventLockGuard lock(CEventLock& lock) { return CEventLockGuard(lock); }
 }

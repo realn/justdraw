@@ -8,7 +8,6 @@ namespace jd {
   class CColorWindow
     : public wxFrame {
   private:
-    std::shared_ptr<CLabelVecInput<wxColor>> mRGBColorEdit;
     wxColor mEditedColor;
 
   public:

@@ -10,6 +10,8 @@
 #include "JDShapeEditors.h"
 
 namespace jd {
+  static const auto INPUT_SIZE = wxSize(50, 20);
+
   CShapeEditor::CShapeEditor(wxWindow * parent) 
     : wxPanel(parent)
   {
@@ -22,12 +24,13 @@ namespace jd {
   CLineShapeEditor::CLineShapeEditor(wxWindow * parent)
     : CShapeEditor(parent)
   {
-    auto inputSize = wxSize(40, 20);
-    auto labels = toarray<2, wxString>({L"X: ", L"Y: "});
     mPointA = 
-      wxmake_shared<CLabelVecInput<wxPoint>>(this, L"Point A", labels, wxPoint(), inputSize);
+      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Point A", INPUT_SIZE);
     mPointB = 
-      wxmake_shared<CLabelVecInput<wxPoint>>(this, L"Point B", labels, wxPoint(), inputSize);
+      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Point B", INPUT_SIZE);
+
+    mPointA->SetLabels({L"X: ", L"Y: "});
+    mPointB->SetLabels({L"X: ", L"Y: "});
 
     auto lineTool = new wxStaticBoxSizer(wxVERTICAL, this, L"Line");
     lineTool->Add(mPointA.get());
@@ -64,11 +67,13 @@ namespace jd {
   CRectShapeEditor::CRectShapeEditor(wxWindow * parent) 
     : CShapeEditor(parent)
   {
-    auto inSize = wxSize(40, 20);
     mOrigin = 
-      wxmake_shared<CLabelVecInput<wxPoint>>(this, L"Origin", toarray<2, wxString>({L"X: ", L"Y: "}), wxPoint(), inSize);
+      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Origin", INPUT_SIZE);
     mSize = 
-      wxmake_shared<CLabelVecInput<wxSize>>(this, L"Size", toarray<2, wxString>({L"W: ", L"H: "}), wxSize(), inSize);
+      wxmake_shared<CTypedLabelSpinVecEdit<wxSize>>(this, L"Size", INPUT_SIZE);
+
+    mOrigin->SetLabels({L"X: ", L"Y: "});
+    mSize->SetLabels({L"W: ", L"H: "});
 
     auto layout = new wxStaticBoxSizer(wxVERTICAL, this, L"Rect");
     layout->Add(mOrigin.get());
@@ -101,10 +106,13 @@ namespace jd {
   CCircleShapeEditor::CCircleShapeEditor(wxWindow * parent) 
     : CShapeEditor(parent)
   {
-    auto inSize = wxSize(40, 20);
     mOrigin = 
-      wxmake_shared<CLabelVecInput<wxPoint>>(this, L"Origin", toarray<2, wxString>({L"X: ", L"Y: "}), wxPoint(), inSize);
-    mRadius = wxmake_shared<CLabelValueInput<int>>(this, L"Radius: ", 0, inSize);
+      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Origin", INPUT_SIZE);
+    mRadius = wxmake_shared<CLabelSpinEdit>(this, L"Radius: ", 
+                                            0, 0, std::numeric_limits<int>::max(), 
+                                            INPUT_SIZE);
+    
+    mOrigin->SetLabels({L"X: ", L"Y: "});
 
     auto sizer = new wxStaticBoxSizer(wxVERTICAL, this, L"Circle");
     sizer->Add(mOrigin.get());

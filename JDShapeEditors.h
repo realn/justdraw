@@ -26,8 +26,8 @@ namespace jd {
   class CLineShapeEditor
     : public CShapeEditor {
   private:
-    std::shared_ptr<CLabelVecInput<wxPoint>> mPointA;
-    std::shared_ptr<CLabelVecInput<wxPoint>> mPointB;
+    std::shared_ptr<CTypedLabelSpinVecEdit<wxPoint>> mPointA;
+    std::shared_ptr<CTypedLabelSpinVecEdit<wxPoint>> mPointB;
 
   public:
     CLineShapeEditor(wxWindow* parent);
@@ -41,8 +41,8 @@ namespace jd {
   class CRectShapeEditor
     : public CShapeEditor {
   protected:
-    std::shared_ptr<CLabelVecInput<wxPoint>> mOrigin;
-    std::shared_ptr<CLabelVecInput<wxSize>> mSize;
+    std::shared_ptr<CTypedLabelSpinVecEdit<wxPoint>> mOrigin;
+    std::shared_ptr<CTypedLabelSpinVecEdit<wxSize>> mSize;
 
   public:
     CRectShapeEditor(wxWindow* parent);
@@ -55,8 +55,8 @@ namespace jd {
   class CCircleShapeEditor
     : public CShapeEditor {
   protected:
-    std::shared_ptr<CLabelVecInput<wxPoint>> mOrigin;
-    std::shared_ptr<CLabelValueInput<int>> mRadius;
+    std::shared_ptr<CTypedLabelSpinVecEdit<wxPoint>> mOrigin;
+    std::shared_ptr<CLabelSpinEdit> mRadius;
 
   public:
     CCircleShapeEditor(wxWindow* parent);
