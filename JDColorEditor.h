@@ -4,10 +4,15 @@
 
 #include "Controls.h"
 
+class wxPanel;
+class wxNotebook;
+
 namespace jd {
   class CColorWindow
     : public wxFrame {
   private:
+    std::shared_ptr<wxPanel> mColorPanel;
+    std::shared_ptr<wxNotebook> mColorEdit;
     wxColor mEditedColor;
 
   public:

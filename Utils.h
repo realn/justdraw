@@ -37,6 +37,8 @@ namespace jd {
   }
 
   constexpr auto BASE_UCHAR = static_cast<unsigned char>(255);
+  constexpr auto BASE_RGB = 255u;
+  constexpr auto BASE_CMYK = 100u;
 
   template<size_t _Size, class _Type>
   inline std::array<_Type, _Size> toarray(std::vector<_Type> const& vec) {

@@ -16,6 +16,8 @@ namespace jd {
     : wxPanel(parent)
   {
     mConfirmButton = wxmake_shared<wxButton>(this, wxID_ANY, L"Confirm");
+    mColorButton = wxmake_shared<wxButton>(this, wxID_ANY, L"Confirm");
+    
   }
 
   CShapeEditor::~CShapeEditor() {}

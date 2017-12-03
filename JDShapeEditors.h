@@ -12,6 +12,7 @@ namespace jd {
     : public wxPanel {
   protected:
     std::shared_ptr<wxButton> mConfirmButton;
+    std::shared_ptr<wxButton> mColorButton;
 
   public:
     CShapeEditor(wxWindow* parent);
@@ -21,6 +22,9 @@ namespace jd {
 
     virtual void SetChanges(std::shared_ptr<CShape> shape) const = 0;
     virtual void SetData(const std::shared_ptr<CShape> shape) = 0;
+
+  protected:
+    void OnColorButtonClick(wxCommandEvent& event);
   };
 
   class CLineShapeEditor
