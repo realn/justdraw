@@ -124,6 +124,7 @@
     <ClInclude Include="Consts.h" />
     <ClInclude Include="Controls.h" />
     <ClInclude Include="Defines.h" />
+    <ClInclude Include="JDColor.h" />
     <ClInclude Include="JDColorEditor.h" />
     <ClInclude Include="JDDocument.h" />
     <ClInclude Include="JDDragContext.h" />

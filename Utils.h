@@ -26,6 +26,18 @@ namespace jd {
   inline glm::vec2 convert(wxPoint const& p) { return glm::vec2(p.x, p.y); }
   inline wxPoint convert(glm::vec2 const& p) { return wxPoint(p.x, p.y); }
 
+  template<class _Type>
+  constexpr float norm(_Type const value, _Type const base = _Type(1)){
+    return static_cast<float>(value) / static_cast<float>(value);
+  }
+  
+  template<class _Type>
+  constexpr float denorm(float const value, _Type const base = _Type(1)) {
+    return static_cast<_Type>(value * static_cast<float>(_Type));
+  }
+
+  constexpr auto BASE_UCHAR = static_cast<unsigned char>(255);
+
   template<size_t _Size, class _Type>
   inline std::array<_Type, _Size> toarray(std::vector<_Type> const& vec) {
     auto result = std::array<_Type, _Size>();
