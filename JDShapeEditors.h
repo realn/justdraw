@@ -24,6 +24,10 @@ namespace jd {
     virtual void SetData(const std::shared_ptr<CShape> shape) = 0;
 
   protected:
+    virtual void AddShapeSpecificControls(wxBoxSizer& sizer) = 0;
+
+    void CreateGUI(wxString const& name);
+
     void OnColorButtonClick(wxCommandEvent& event);
   };
 
@@ -40,6 +44,10 @@ namespace jd {
     // Inherited via CShapeEditor
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
     virtual void SetData(const std::shared_ptr<CShape> shape) override;
+
+  protected:
+    // Inherited via CShapeEditor
+    virtual void AddShapeSpecificControls(wxBoxSizer & sizer) override;
   };
 
   class CRectShapeEditor
@@ -54,6 +62,10 @@ namespace jd {
 
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
     virtual void SetData(const std::shared_ptr<CShape> shape) override;
+
+  protected:
+    // Inherited via CShapeEditor
+    virtual void AddShapeSpecificControls(wxBoxSizer & sizer) override;
   };
 
   class CCircleShapeEditor
@@ -69,6 +81,10 @@ namespace jd {
     // Inherited via CShapeEditor
     virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
     virtual void SetData(const std::shared_ptr<CShape> shape) override;
+
+  protected:
+    // Inherited via CShapeEditor
+    virtual void AddShapeSpecificControls(wxBoxSizer & sizer) override;
   };
 
 }

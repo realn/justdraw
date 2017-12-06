@@ -6,6 +6,7 @@
 
 #include "Utils.h"
 #include "Controls.h"
+#include "JDColorEditor.h"
 #include "JDShape.h"
 #include "JDShapeEditors.h"
 
@@ -15,31 +16,34 @@ namespace jd {
   CShapeEditor::CShapeEditor(wxWindow * parent) 
     : wxPanel(parent)
   {
-    mConfirmButton = wxmake_shared<wxButton>(this, wxID_ANY, L"Confirm");
-    mColorButton = wxmake_shared<wxButton>(this, wxID_ANY, L"Confirm");
-    
   }
 
   CShapeEditor::~CShapeEditor() {}
+
+  void CShapeEditor::CreateGUI(wxString const& name) {
+    mConfirmButton = wxmake_shared<wxButton>(this, wxID_ANY, L"Confirm");
+    mColorButton = wxmake_shared<wxButton>(this, wxID_ANY, L"Edit Color");
+    mColorButton->Bind(wxEVT_BUTTON, &CShapeEditor::OnColorButtonClick, this);
+
+    auto sizer = new wxStaticBoxSizer(wxVERTICAL, this, name);
+    AddShapeSpecificControls(*sizer);
+    sizer->Add(mColorButton.get());
+    sizer->Add(mConfirmButton.get());
+    sizer->AddStretchSpacer();
+    SetSizerAndFit(sizer);
+  }
+
+  void CShapeEditor::OnColorButtonClick(wxCommandEvent & event) {
+    auto window = new CColorWindow(this);
+    window->Show();
+    window->SetAutoLayout(true);
+  }
 
 
   CLineShapeEditor::CLineShapeEditor(wxWindow * parent)
     : CShapeEditor(parent)
   {
-    mPointA = 
-      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Point A", INPUT_SIZE);
-    mPointB = 
-      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Point B", INPUT_SIZE);
-
-    mPointA->SetLabels({L"X: ", L"Y: "});
-    mPointB->SetLabels({L"X: ", L"Y: "});
-
-    auto lineTool = new wxStaticBoxSizer(wxVERTICAL, this, L"Line");
-    lineTool->Add(mPointA.get());
-    lineTool->Add(mPointB.get());
-    lineTool->Add(mConfirmButton.get());
-    lineTool->AddStretchSpacer();
-    SetSizerAndFit(lineTool);
+    CreateGUI(L"Line");
   }
 
   CLineShapeEditor::~CLineShapeEditor() {}
@@ -65,23 +69,24 @@ namespace jd {
     }
   }
 
+  void CLineShapeEditor::AddShapeSpecificControls(wxBoxSizer & sizer) {
+    mPointA =
+      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Point A", INPUT_SIZE);
+    mPointB =
+      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Point B", INPUT_SIZE);
+
+    mPointA->SetLabels({L"X: ", L"Y: "});
+    mPointB->SetLabels({L"X: ", L"Y: "});
+
+    sizer.Add(mPointA.get());
+    sizer.Add(mPointB.get());
+  }
+
 
   CRectShapeEditor::CRectShapeEditor(wxWindow * parent) 
     : CShapeEditor(parent)
   {
-    mOrigin = 
-      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Origin", INPUT_SIZE);
-    mSize = 
-      wxmake_shared<CTypedLabelSpinVecEdit<wxSize>>(this, L"Size", INPUT_SIZE);
-
-    mOrigin->SetLabels({L"X: ", L"Y: "});
-    mSize->SetLabels({L"W: ", L"H: "});
-
-    auto layout = new wxStaticBoxSizer(wxVERTICAL, this, L"Rect");
-    layout->Add(mOrigin.get());
-    layout->Add(mSize.get());
-    layout->Add(mConfirmButton.get());
-    SetSizerAndFit(layout);
+    CreateGUI(L"Rect");
   }
 
   CRectShapeEditor::~CRectShapeEditor() {}
@@ -105,22 +110,23 @@ namespace jd {
     }
   }
 
+  void CRectShapeEditor::AddShapeSpecificControls(wxBoxSizer & sizer) {
+    mOrigin =
+      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Origin", INPUT_SIZE);
+    mSize =
+      wxmake_shared<CTypedLabelSpinVecEdit<wxSize>>(this, L"Size", INPUT_SIZE);
+
+    mOrigin->SetLabels({L"X: ", L"Y: "});
+    mSize->SetLabels({L"W: ", L"H: "});
+
+    sizer.Add(mOrigin.get());
+    sizer.Add(mSize.get());
+  }
+
   CCircleShapeEditor::CCircleShapeEditor(wxWindow * parent) 
     : CShapeEditor(parent)
   {
-    mOrigin = 
-      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Origin", INPUT_SIZE);
-    mRadius = wxmake_shared<CLabelSpinEdit>(this, L"Radius: ", 
-                                            0, 0, std::numeric_limits<int>::max(), 
-                                            INPUT_SIZE);
-    
-    mOrigin->SetLabels({L"X: ", L"Y: "});
-
-    auto sizer = new wxStaticBoxSizer(wxVERTICAL, this, L"Circle");
-    sizer->Add(mOrigin.get());
-    sizer->Add(mRadius.get());
-    sizer->Add(mConfirmButton.get());
-    SetSizerAndFit(sizer);
+    CreateGUI(L"Circle");
   }
 
   CCircleShapeEditor::~CCircleShapeEditor() {}
@@ -141,5 +147,18 @@ namespace jd {
       mOrigin->SetValue(wxPoint());
       mRadius->SetValue(0);
     }
+  }
+
+  void CCircleShapeEditor::AddShapeSpecificControls(wxBoxSizer & sizer) {
+    mOrigin =
+      wxmake_shared<CTypedLabelSpinVecEdit<wxPoint>>(this, L"Origin", INPUT_SIZE);
+    mRadius = wxmake_shared<CLabelSpinEdit>(this, L"Radius: ",
+                                            0, 0, std::numeric_limits<int>::max(),
+                                            INPUT_SIZE);
+
+    mOrigin->SetLabels({L"X: ", L"Y: "});
+
+    sizer.Add(mOrigin.get());
+    sizer.Add(mRadius.get());
   }
 }
