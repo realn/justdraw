@@ -50,8 +50,11 @@ namespace jd {
                                              wxString const & label, 
                                              int value, int min, int max, 
                                              wxSize const& sliderSize,
-                                             wxSize const & inputSize) {
-    mLabel = wxmake_shared<wxStaticText>(this, wxID_ANY, label);
+                                             wxSize const & inputSize,
+                                             wxSize const& labelSize)
+    : wxWindow(parent, wxID_ANY)
+  {
+    mLabel = wxmake_shared<wxStaticText>(this, wxID_ANY, label, wxDefaultPosition, labelSize);
     mSlider = wxmake_shared<wxSlider>(this, wxID_ANY, value, min, max, wxDefaultPosition, sliderSize);
     mSlider->Bind(wxEVT_SLIDER, &CLabelSliderSpinEdit::OnSlider, this);
     mEdit = wxmake_shared<wxSpinCtrl>(this, wxID_ANY, "", wxDefaultPosition, inputSize);
@@ -68,7 +71,7 @@ namespace jd {
 
   CLabelSliderSpinEdit::~CLabelSliderSpinEdit() {}
  
-  void CLabelSliderSpinEdit::SetValue(int value) { 
+  void CLabelSliderSpinEdit::SetValue(int const& value) { 
     mSlider->SetValue(value);
     mEdit->SetValue(value); 
   }

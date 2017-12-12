@@ -33,8 +33,19 @@ namespace jd {
     return result;
   }
 
+  template<typename _Type>
+  class IValueEdit {
+  public:
+    virtual ~IValueEdit() {}
+
+    virtual void SetValue(_Type const& value) = 0;
+    virtual _Type GetValue() const = 0;
+  };
+
   class CLabelTextEdit
-    : public wxWindow {
+    : public wxWindow 
+    , public IValueEdit<wxString>
+  {
   protected:
     std::shared_ptr<wxStaticText> mLabel;
     std::shared_ptr<wxTextCtrl> mEdit;
@@ -47,8 +58,8 @@ namespace jd {
     virtual ~CLabelTextEdit();
 
     void ChangeValue(wxString const& value) { mEdit->ChangeValue(value); }
-    void SetValue(wxString const& value) { mEdit->SetValue(value); }
-    wxString GetValue() const { return mEdit->GetValue(); }
+    void SetValue(wxString const& value) override { mEdit->SetValue(value); }
+    wxString GetValue() const override { return mEdit->GetValue(); }
 
     wxStaticText& GetLabelCtrl() const { return *mLabel; }
     wxTextCtrl& GetEditCtrl() const { return *mEdit; }
@@ -57,7 +68,8 @@ namespace jd {
   };
 
   class CLabelSpinEdit
-    : public wxWindow {
+    : public wxWindow 
+    , public IValueEdit<int> {
   protected:
     std::shared_ptr<wxStaticText> mLabel;
     std::shared_ptr<wxSpinCtrl> mEdit;
@@ -71,15 +83,17 @@ namespace jd {
                    wxSize const& inputSize = wxDefaultSize);
     virtual ~CLabelSpinEdit();
 
-    void SetValue(int value) { mEdit->SetValue(value); }
-    int GetValue() const { return mEdit->GetValue(); }
+    void SetValue(int const& value) override { mEdit->SetValue(value); }
+    int GetValue() const override { return mEdit->GetValue(); }
 
     wxStaticText& GetLabelCtrl() const { return *mLabel; }
     wxSpinCtrl& GetEditCtrl() const { return *mEdit; }
   };
 
   class CLabelSliderSpinEdit
-    : public wxWindow {
+    : public wxWindow 
+    , public IValueEdit<int>
+  {
   protected:
     std::shared_ptr<wxStaticText> mLabel;
     std::shared_ptr<wxSlider> mSlider;
@@ -93,11 +107,12 @@ namespace jd {
                          int min = std::numeric_limits<int>::min(),
                          int max = std::numeric_limits<int>::max(),
                          wxSize const& sliderSize = wxDefaultSize,
-                         wxSize const& inputSize = wxDefaultSize);
+                         wxSize const& inputSize = wxDefaultSize,
+                         wxSize const& labelSize = wxDefaultSize);
     virtual ~CLabelSliderSpinEdit();
 
-    void SetValue(int value);
-    int GetValue() const;
+    void SetValue(int const& value) override;
+    int GetValue() const override;
 
     virtual void SetLabel(wxString const& value) override;
     virtual wxString GetLabel() const override;
@@ -113,7 +128,9 @@ namespace jd {
 
   template<typename _Type>
   class CLabelValueEdit
-    : public wxWindow {
+    : public wxWindow 
+    , public IValueEdit<_Type>
+  {
   private:
     std::shared_ptr<CLabelTextEdit> mEdit;
     std::shared_ptr<IValueConstraint<_Type>> mConstraint;
@@ -133,8 +150,8 @@ namespace jd {
     virtual ~CLabelValueEdit() {}
 
     void ChangeValue(_Type const& value) { mEdit->ChangeValue(tostr(value)); }
-    void SetValue(_Type const& value) { mEdit->SetValue(tostr(value)); }
-    _Type GetValue() const { return fromstr<_Type>(mEdit->GetValue().ToStdString()); }
+    void SetValue(_Type const& value) override { mEdit->SetValue(tostr(value)); }
+    _Type GetValue() const override { return fromstr<_Type>(mEdit->GetValue().ToStdString()); }
 
     wxStaticText& GetLabelCtrl() const { return mEdit->GetLabelCtrl(); }
     wxTextCtrl& GetEditCtrl() const { return mEdit->GetEditCtrl(); }
@@ -150,7 +167,8 @@ namespace jd {
   };
 
   class CLabelSpinVecEdit
-    : public wxWindow {
+    : public wxWindow 
+  {
   public:
     using EditsT = std::vector<std::shared_ptr<CLabelSpinEdit>>;
     using LabelsT = std::vector<wxString>;
