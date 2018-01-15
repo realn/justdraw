@@ -7,8 +7,8 @@
 
 namespace jd {
 
-  CCreateShapeTool::CCreateShapeTool(std::shared_ptr<IShapeFactory> factory, std::shared_ptr<CShapeEditor> editor)
-    : mFactory(factory), mEditor(editor)
+  CCreateShapeTool::CCreateShapeTool(std::shared_ptr<IShapeFactory> factory, std::shared_ptr<CShapeEditor> editor, std::shared_ptr<wxColor> color)
+    : mFactory(factory), mEditor(editor), mColor(color)
   {}
 
   CCreateShapeTool::~CCreateShapeTool() {}
@@ -39,6 +39,7 @@ namespace jd {
     auto result = ShapeVecT();
     if(mShape) {
       mEditor->SetChanges(mShape);
+      mShape->SetFillColor(*mColor);
       result.push_back(mShape);
       mShape.reset();
     }
@@ -51,6 +52,7 @@ namespace jd {
 
   void CCreateShapeTool::DrawPreview(wxClientDC & dc) {
     if(mShape && mWasUpdate) {
+      mShape->SetFillColor(*mColor);
       mShape->Draw(dc);
     }
   }

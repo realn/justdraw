@@ -20,11 +20,12 @@ namespace jd {
     std::shared_ptr<IShapeFactory> mFactory;
     std::shared_ptr<CShapeEditor> mEditor;
     std::shared_ptr<CShape> mShape;
+    std::shared_ptr<wxColor> mColor;
     wxPoint mStartPt;
     bool mWasUpdate = false;
 
   public:
-    CCreateShapeTool(std::shared_ptr<IShapeFactory> factory, std::shared_ptr<CShapeEditor> editor);
+    CCreateShapeTool(std::shared_ptr<IShapeFactory> factory, std::shared_ptr<CShapeEditor> editor, std::shared_ptr<wxColor> color);
     virtual ~CCreateShapeTool();
 
     // Inherited via CShapeTool

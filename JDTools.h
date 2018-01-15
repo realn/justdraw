@@ -45,9 +45,10 @@ namespace jd {
   private:
     wxWindow * mParentWindow;
     wxToolBar* mToolBar;
+    std::shared_ptr<wxColor> mColor;
 
   public:
-    CColorTool(wxWindow* parent, wxToolBar* toolBar);
+    CColorTool(wxWindow* parent, wxToolBar* toolBar, std::shared_ptr<wxColor> color);
     virtual ~CColorTool();
 
     virtual void Execute() override;

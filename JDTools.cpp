@@ -18,14 +18,15 @@ namespace jd {
 
 
 
-  CColorTool::CColorTool(wxWindow* parent, wxToolBar* toolBar)
-    : mParentWindow(parent), mToolBar(toolBar)
+  CColorTool::CColorTool(wxWindow* parent, wxToolBar* toolBar, std::shared_ptr<wxColor> color)
+    : mParentWindow(parent), mToolBar(toolBar), mColor(color)
   {}
 
   CColorTool::~CColorTool() {}
 
   void CColorTool::Execute() {
     auto window = new CColorWindow(mParentWindow);
+    window->SetColor(*mColor);
     window->SetAutoLayout(true);
     window->ShowModal();
 
@@ -34,6 +35,8 @@ namespace jd {
     };
 
     auto color = window->GetColor();
+    *mColor = color;
+
     auto datac = std::vector<rgb>();
     auto dataa = std::vector<unsigned char>();
     datac.resize(32 * 32);
