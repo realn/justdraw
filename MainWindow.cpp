@@ -14,7 +14,15 @@
 
 #include "MainWindow.h"
 
+using namespace std::string_literals;
+
 namespace jd {
+  static const auto STR_BMP_TOOL_LINE = L"assets/tool_line.png"s;
+  static const auto STR_BMP_TOOL_RECT = L"assets/tool_rect.png"s;
+  static const auto STR_BMP_TOOL_SPHERE = L"assets/tool_sphere.png"s;
+  static const auto STR_BMP_TOOL_MOVE = L"assets/tool_move.png"s;
+  static const auto STR_BMP_TOOL_SIZE = L"assets/tool_size.png"s;
+
   CMainWindow::CMainWindow()
     : wxFrame(nullptr, wxID_ANY, "JustDraw") {
     mShapeFactories[ShapeType::Line] = std::make_shared<CShapeFactory<CLineShape>>();
@@ -24,12 +32,12 @@ namespace jd {
     wxBitmap whiteBitmap(16, 16);
 
     auto toolbar = CreateToolBar();
-    toolbar->AddTool(wxid(ToolType::CreateLine), L"Line", whiteBitmap);
-    toolbar->AddTool(wxid(ToolType::CreateRect), L"Rect", whiteBitmap);
-    toolbar->AddTool(wxid(ToolType::CreateCircle), L"Circle", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::CreateLine), L"Line", wxBitmap(STR_BMP_TOOL_LINE, wxBITMAP_TYPE_PNG));
+    toolbar->AddTool(wxid(ToolType::CreateRect), L"Rect", wxBitmap(STR_BMP_TOOL_RECT, wxBITMAP_TYPE_PNG));
+    toolbar->AddTool(wxid(ToolType::CreateCircle), L"Circle", wxBitmap(STR_BMP_TOOL_SPHERE, wxBITMAP_TYPE_PNG));
     toolbar->AddSeparator();
-    toolbar->AddTool(wxid(ToolType::Move), L"Move", whiteBitmap);
-    toolbar->AddTool(wxid(ToolType::Size), L"Size", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::Move), L"Move", wxBitmap(STR_BMP_TOOL_MOVE, wxBITMAP_TYPE_PNG));
+    toolbar->AddTool(wxid(ToolType::Size), L"Size", wxBitmap(STR_BMP_TOOL_SIZE, wxBITMAP_TYPE_PNG));
     toolbar->Realize();
 
     mCanvas = new wxPanel(this);
