@@ -43,16 +43,16 @@ namespace jd {
   };
 
   constexpr float cmykToChannel(float rgbChannel, float black) {
-    return (1.0f - rgbChannel - black) / (1.0f - black);
+    return (1.0f - rgbChannel - black) / std::max(1.0f - black, 0.000001f);
   }
 
   constexpr float rgbToChannel(float cmykChannel, float black) {
-    return (1.0f - cmykChannel)  * (1.0f - black);
+    return (1.0f - cmykChannel)  * std::max(1.0f - black, 0.000001f);
   }
 
   inline CColorCMYK convert(CColorRGB const& value) {
     CColorCMYK result;
-    result.mK = std::max({value.mColor.r, value.mColor.g, value.mColor.b});
+    result.mK = 1.0f - std::max({value.mColor.r, value.mColor.g, value.mColor.b});
     result.mC = cmykToChannel(value.mColor.r, result.mK);
     result.mM = cmykToChannel(value.mColor.g, result.mK);
     result.mY = cmykToChannel(value.mColor.b, result.mK);

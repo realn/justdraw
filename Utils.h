@@ -28,12 +28,12 @@ namespace jd {
 
   template<class _Type>
   constexpr float norm(_Type const value, _Type const base = _Type(1)){
-    return static_cast<float>(value) / static_cast<float>(value);
+    return static_cast<float>(value) / static_cast<float>(base);
   }
   
-  template<class _Type>
+  template<typename _Type>
   constexpr float denorm(float const value, _Type const base = _Type(1)) {
-    return static_cast<_Type>(value * static_cast<float>(_Type));
+    return static_cast<_Type>(value * static_cast<float>(base));
   }
 
   constexpr auto BASE_UCHAR = static_cast<unsigned char>(255);

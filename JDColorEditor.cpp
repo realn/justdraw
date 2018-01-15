@@ -4,6 +4,7 @@
 #include <wx/sizer.h>
 #include <wx/button.h>
 
+#include "JDColor.h"
 #include "JDColorEditor.h"
 
 namespace jd {
@@ -15,6 +16,7 @@ namespace jd {
 
     mColorEdit->AddPage(CreateRGBPage(mColorEdit.get()), L"RGB");
     mColorEdit->AddPage(CreateCMYKPage(mColorEdit.get()), L"CMYK");
+    mColorEdit->Bind(wxEVT_NOTEBOOK_PAGE_CHANGED, &CColorWindow::OnPageChanged, this);
 
     //auto buttons = new wxBoxSizer(wxHORIZONTAL);
     //buttons->AddStretchSpacer(1);
@@ -36,6 +38,7 @@ namespace jd {
     auto labelSize = wxSize(50, 30);
     auto sliderSize = wxSize(150, 30);
     auto inputSize = wxSize(50, 30);
+
     mRed = wxmake_shared<CLabelSliderSpinEdit>(panel, L"Red", 0, 0, 255, sliderSize, inputSize, labelSize);
     mGreen = wxmake_shared<CLabelSliderSpinEdit>(panel, L"Green", 0, 0, 255, sliderSize, inputSize, labelSize);
     mBlue = wxmake_shared<CLabelSliderSpinEdit>(panel, L"Blue", 0, 0, 255, sliderSize, inputSize, labelSize);
@@ -68,5 +71,64 @@ namespace jd {
     sizer->Add(mAlphaCMYK.get());
     panel->SetSizerAndFit(sizer);
     return panel;
+  }
+
+  wxColor CColorWindow::GetPageRGBColor() const {
+    auto r = mRed->GetValue();
+    auto g = mGreen->GetValue();
+    auto b = mBlue->GetValue();
+    auto a = mAlpha->GetValue();
+    return wxColor(r, g, b, a);
+  }
+
+  wxColor CColorWindow::GetPageCMYKColor() const {
+    auto c = norm<unsigned>(mCyan->GetValue(), BASE_CMYK);
+    auto m = norm<unsigned>(mMagenta->GetValue(), BASE_CMYK);
+    auto y = norm<unsigned>(mYellow->GetValue(), BASE_CMYK);
+    auto k = norm<unsigned>(mBlack->GetValue(), BASE_CMYK);
+    auto a = norm<unsigned>(mAlphaCMYK->GetValue(), BASE_CMYK);
+
+    return convert(CColorCMYK(c, m, y, k, a)).ToWxColor();
+  }
+
+  wxColor CColorWindow::GetPageColor(int page) const {
+    if(page == 0) {
+      return GetPageRGBColor();
+    }
+    return GetPageCMYKColor();
+  }
+
+  void CColorWindow::SetPageRGBColor(wxColor const & color) {
+    mRed->SetValue(color.Red());
+    mGreen->SetValue(color.Green());
+    mBlue->SetValue(color.Blue());
+    mAlpha->SetValue(color.Alpha());
+  }
+
+  void CColorWindow::SetPageCMYKColor(wxColor const & color) {
+    auto cmyk = convert(CColorRGB(color));
+
+    mCyan->SetValue(denorm(cmyk.mC, BASE_CMYK));
+    mMagenta->SetValue(denorm(cmyk.mM, BASE_CMYK));
+    mYellow->SetValue(denorm(cmyk.mY, BASE_CMYK));
+    mBlack->SetValue(denorm(cmyk.mK, BASE_CMYK));
+    mAlphaCMYK->SetValue(denorm(cmyk.mAlpha, BASE_CMYK));
+  }
+
+  void CColorWindow::SetPageColor(int page, wxColor const & color) {
+    if(page == 0) {
+      SetPageRGBColor(color);
+    }
+    else {
+      SetPageCMYKColor(color);
+    }
+  }
+
+  void CColorWindow::OnPageChanged(wxBookCtrlEvent & event) {
+    int page = event.GetSelection() == 0 ? 0 : 1;
+    int otherpage = page == 0 ? 1 : 0;
+
+    auto color = GetPageColor(otherpage);
+    SetPageColor(page, color);
   }
 }

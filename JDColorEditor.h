@@ -7,6 +7,7 @@
 
 class wxPanel;
 class wxNotebook;
+class wxBookCtrlEvent;
 
 namespace jd {
   class CColorWindow
@@ -37,5 +38,15 @@ namespace jd {
 
     wxWindow* CreateRGBPage(wxWindow* parent);
     wxWindow* CreateCMYKPage(wxWindow* parent);
+
+    wxColor GetPageRGBColor() const;
+    wxColor GetPageCMYKColor() const;
+    wxColor GetPageColor(int page) const;
+
+    void SetPageRGBColor(wxColor const& color);
+    void SetPageCMYKColor(wxColor const& color);
+    void SetPageColor(int page, wxColor const& color);
+
+    void OnPageChanged(wxBookCtrlEvent& event);
   };
 }
