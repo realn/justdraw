@@ -1,11 +1,7 @@
 #pragma once
 
-#include <memory>
-#include <map>
-#include <vector>
-#include <wx/gdicmn.h>
-
 #include "Consts.h"
+#include "JDTools.h"
 
 namespace jd {
   class CShape;
@@ -15,22 +11,7 @@ namespace jd {
 
   using EditorMapT = std::map<ShapeType, std::shared_ptr<CShapeEditor>>;
   using FactoryMapT = std::map<ShapeType, std::shared_ptr<IShapeFactory>>;
-  using ShapeVecT = std::vector<std::shared_ptr<CShape>>;
 
-  class CShapeTool {
-  public:
-    CShapeTool();
-    virtual ~CShapeTool();
-
-    virtual void Prepare() = 0;
-    virtual wxCursor OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const& pt) = 0;
-    virtual void Start(wxPoint const& pt) = 0;
-    virtual void Update(wxPoint const& pt) = 0;
-    virtual ShapeVecT Finish() = 0;
-    virtual void Cancel() = 0;
-
-    virtual void DrawPreview(wxClientDC& dc) = 0;
-  };
 
   class CCreateShapeTool 
     : public CShapeTool
@@ -47,7 +28,7 @@ namespace jd {
     virtual ~CCreateShapeTool();
 
     // Inherited via CShapeTool
-    virtual void Prepare() override;
+    virtual void Execute() override;
     virtual wxCursor OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) override;
     virtual void Start(wxPoint const& pt) override;
     virtual void Update(wxPoint const & pt) override;
@@ -69,7 +50,7 @@ namespace jd {
     virtual ~CMoveShapeTool();
 
     // Inherited via CShapeTool
-    virtual void Prepare() override;
+    virtual void Execute() override;
     virtual wxCursor OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) override;
     virtual void Start(wxPoint const & pt) override;
     virtual void Update(wxPoint const & pt) override;
@@ -95,7 +76,7 @@ namespace jd {
     virtual ~CSizeShapeTool();
 
     // Inherited via CShapeTool
-    virtual void Prepare() override;
+    virtual void Execute() override;
     virtual wxCursor OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) override;
     virtual void Start(wxPoint const & pt) override;
     virtual void Update(wxPoint const & pt) override;

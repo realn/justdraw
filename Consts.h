@@ -14,7 +14,8 @@ namespace jd {
     CreateRect,
     CreateCircle,
     Move,
-    Size
+    Size,
+    Color
   };
 
   enum class Freedom {

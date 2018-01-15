@@ -6,9 +6,6 @@
 #include "JDShapeTools.h"
 
 namespace jd {
-  CShapeTool::CShapeTool() {}
-
-  CShapeTool::~CShapeTool() {}
 
   CCreateShapeTool::CCreateShapeTool(std::shared_ptr<IShapeFactory> factory, std::shared_ptr<CShapeEditor> editor)
     : mFactory(factory), mEditor(editor)
@@ -16,7 +13,7 @@ namespace jd {
 
   CCreateShapeTool::~CCreateShapeTool() {}
 
-  void CCreateShapeTool::Prepare() {
+  void CCreateShapeTool::Execute() {
     mEditor->Show();
   }
 
@@ -64,7 +61,7 @@ namespace jd {
 
   CMoveShapeTool::~CMoveShapeTool() {}
 
-  void CMoveShapeTool::Prepare() {
+  void CMoveShapeTool::Execute() {
     mHoverShape.reset();
     mSelectedShape.reset();
     mLastPoint = wxPoint();
@@ -135,7 +132,7 @@ namespace jd {
 
   CSizeShapeTool::~CSizeShapeTool() {}
 
-  void CSizeShapeTool::Prepare() {
+  void CSizeShapeTool::Execute() {
     mHoverShape.reset();
     mSelectedShape.reset();
     mLastPoint = wxPoint();

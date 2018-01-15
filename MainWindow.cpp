@@ -83,7 +83,10 @@ namespace jd {
     }
 
     if(mCurrentToolType != ToolType::None) {
-      GetTool().DrawPreview(dev);
+      auto tool = GetShapeTool();
+      if(tool) {
+        tool->DrawPreview(dev);
+      }
     }
   }
 
@@ -96,6 +99,10 @@ namespace jd {
     return std::shared_ptr<CShape>();
   }
 
+  std::shared_ptr<CShapeTool> CMainWindow::GetShapeTool() const {
+    return std::dynamic_pointer_cast<CShapeTool>(mTools.at(mCurrentToolType));
+  }
+
   void CMainWindow::OnToolbarButtonClicked(wxCommandEvent & event) {
     mCurrentToolType = ToolType::None;
     mCurrentShapeType = ShapeType::None;
@@ -104,7 +111,7 @@ namespace jd {
     for(auto& item : mTools) { item.second->Cancel(); }
 
     mCurrentToolType = wxid<ToolType>(event.GetId());
-    GetTool().Prepare();
+    GetTool().Execute();
 
     GetSizer()->Layout();
   }
@@ -117,9 +124,12 @@ namespace jd {
       return;
 
     if(event.GetButton() == mDrag.mButton == wxMOUSE_BTN_LEFT) {
-      auto result = GetTool().Finish();
-      for(auto& shape : result) {
-        mShapes.push_back(shape);
+      auto tool = GetShapeTool();
+      if(tool) {
+        auto result = tool->Finish();
+        for(auto& shape : result) {
+          mShapes.push_back(shape);
+        }
       }
     }
     else if(event.GetButton() == wxMOUSE_BTN_RIGHT) {
@@ -138,8 +148,11 @@ namespace jd {
       return;
 
     if(event.GetButton() == wxMOUSE_BTN_LEFT) {
-      GetTool().Start(event.GetPosition());
-      GetSizer()->Layout();
+      auto tool = GetShapeTool();
+      if(tool) {
+        tool->Start(event.GetPosition());
+        GetSizer()->Layout();
+      }
     }
 
     Refresh();
@@ -150,13 +163,16 @@ namespace jd {
 
     if(mCanvas->GetClientRect().Contains(event.GetPosition())) {
       if(mCurrentToolType != ToolType::None) {
-        auto shape = FindShapeOnPoint(event.GetPosition(), 4.0f);
-        auto cursor = GetTool().OnShapeHover(shape, event.GetPosition());
-        SetCursor(cursor);
+        auto tool = GetShapeTool();
+        if(tool) {
+          auto shape = FindShapeOnPoint(event.GetPosition(), 4.0f);
+          auto cursor = tool->OnShapeHover(shape, event.GetPosition());
+          SetCursor(cursor);
 
-        GetTool().Update(event.GetPosition());
+          tool->Update(event.GetPosition());
 
-        Refresh();
+          Refresh();
+        }
       }
     }
 
@@ -173,12 +189,15 @@ namespace jd {
   }
 
   void CMainWindow::OnShapeCreateButtonClicked(wxCommandEvent & event) {
-    GetTool().Start(wxPoint());
-    auto shapes = GetTool().Finish();
-    for(auto& shape : shapes) {
-      mShapes.push_back(shape);
+    auto tool = GetShapeTool();
+    if(tool) {
+      tool->Start(wxPoint());
+      auto shapes = tool->Finish();
+      for(auto& shape : shapes) {
+        mShapes.push_back(shape);
+      }
+      Refresh();
     }
-    Refresh();
   }
 
 }
