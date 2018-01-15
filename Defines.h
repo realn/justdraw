@@ -7,7 +7,7 @@
 
 template<class _wxType, class ... Args>
 inline std::shared_ptr<_wxType> wxmake_shared(Args&&... args) {
-  return std::shared_ptr<_wxType>(new _wxType(std::forward<Args>(args)...), [](auto& obj)->auto{ 
+  return std::shared_ptr<_wxType>(new _wxType(std::forward<Args>(args)...), [](_wxType* obj) { 
     auto win = dynamic_cast<wxWindow*>(obj);
     if(win) win->Destroy();
     else delete obj;
