@@ -37,4 +37,17 @@ namespace jd {
     virtual void DrawPreview(wxClientDC& dc) = 0;
   };
 
+  class CColorTool 
+    : public CTool
+  {
+  private:
+    wxWindow * mParentWindow;
+
+  public:
+    CColorTool(wxWindow* parent);
+    virtual ~CColorTool();
+
+    virtual void Execute() override;
+    virtual void Cancel() override;
+  };
 }

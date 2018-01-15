@@ -29,7 +29,7 @@ namespace jd {
     mShapeFactories[ShapeType::Rect] = std::make_shared<CShapeFactory<CRectShape>>();
     mShapeFactories[ShapeType::Circle] = std::make_shared<CShapeFactory<CCircleShape>>();
 
-    wxBitmap whiteBitmap(16, 16);
+    wxBitmap whiteBitmap(32, 32);
 
     auto toolbar = CreateToolBar();
     toolbar->AddTool(wxid(ToolType::CreateLine), L"Line", wxBitmap(STR_BMP_TOOL_LINE, wxBITMAP_TYPE_PNG));
@@ -38,6 +38,7 @@ namespace jd {
     toolbar->AddSeparator();
     toolbar->AddTool(wxid(ToolType::Move), L"Move", wxBitmap(STR_BMP_TOOL_MOVE, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::Size), L"Size", wxBitmap(STR_BMP_TOOL_SIZE, wxBITMAP_TYPE_PNG));
+    toolbar->AddTool(wxid(ToolType::Color), L"Color", whiteBitmap);
     toolbar->Realize();
 
     mCanvas = new wxPanel(this);
@@ -73,6 +74,7 @@ namespace jd {
     mTools[ToolType::CreateCircle] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Circle], mEditors[ShapeType::Circle]);
     mTools[ToolType::Move] = std::make_shared<CMoveShapeTool>(mEditors);
     mTools[ToolType::Size] = std::make_shared<CSizeShapeTool>(mEditors);
+    mTools[ToolType::Color] = std::make_shared<CColorTool>(this);
   }
 
   CMainWindow::~CMainWindow() {}
