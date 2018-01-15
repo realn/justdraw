@@ -6,6 +6,8 @@
 #include <wx/gdicmn.h>
 #include <wx/dcclient.h>
 
+class wxToolBar;
+
 namespace jd {
   class CShape;
 
@@ -42,9 +44,10 @@ namespace jd {
   {
   private:
     wxWindow * mParentWindow;
+    wxToolBar* mToolBar;
 
   public:
-    CColorTool(wxWindow* parent);
+    CColorTool(wxWindow* parent, wxToolBar* toolBar);
     virtual ~CColorTool();
 
     virtual void Execute() override;

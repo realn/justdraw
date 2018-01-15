@@ -1,4 +1,7 @@
 
+#include <wx\toolbar.h>
+
+#include "Consts.h"
 #include "JDColorEditor.h"
 #include "JDTools.h"
 
@@ -15,16 +18,40 @@ namespace jd {
 
 
 
-  CColorTool::CColorTool(wxWindow* parent) 
-    : mParentWindow(parent)
+  CColorTool::CColorTool(wxWindow* parent, wxToolBar* toolBar)
+    : mParentWindow(parent), mToolBar(toolBar)
   {}
 
   CColorTool::~CColorTool() {}
 
   void CColorTool::Execute() {
     auto window = new CColorWindow(mParentWindow);
-    window->Show();
     window->SetAutoLayout(true);
+    window->ShowModal();
+
+    struct rgb {
+      unsigned char r, g, b;
+    };
+
+    auto color = window->GetColor();
+    auto datac = std::vector<rgb>();
+    auto dataa = std::vector<unsigned char>();
+    datac.resize(32 * 32);
+    dataa.resize(32 * 32);
+    for(auto& pixel : datac) {
+      pixel.r = color.Red();
+      pixel.g = color.Green();
+      pixel.b = color.Blue();
+    }
+    for(auto& alpha : dataa) {
+      alpha = color.Alpha();
+    }
+
+    auto colorimg = wxImage(32, 32, reinterpret_cast<unsigned char*>(datac.data()), dataa.data(), true);
+    mToolBar->SetToolNormalBitmap(wxid(ToolType::Color), colorimg);
+    mToolBar->Realize();
+    mToolBar->Refresh();
+    mParentWindow->Refresh();
   }
 
   void CColorTool::Cancel() {}

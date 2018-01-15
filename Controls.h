@@ -124,6 +124,8 @@ namespace jd {
   protected:
     void OnSlider(wxCommandEvent& event);
     void OnSpin(wxSpinEvent& event);
+
+    void SendValueChanged();
   };
 
   template<typename _Type>

@@ -48,5 +48,6 @@ namespace jd {
     void SetPageColor(int page, wxColor const& color);
 
     void OnPageChanged(wxBookCtrlEvent& event);
+    void OnColorChanged(wxCommandEvent& event);
   };
 }

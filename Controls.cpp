@@ -91,12 +91,21 @@ namespace jd {
       return;
     auto g = lock(mUpdating);
     mEdit->SetValue(mSlider->GetValue());
+    SendValueChanged();
   }
   void CLabelSliderSpinEdit::OnSpin(wxSpinEvent & event) {
     if(mUpdating)
       return;
     auto g = lock(mUpdating);
     mSlider->SetValue(mEdit->GetValue());
+    SendValueChanged();
+  }
+
+  void CLabelSliderSpinEdit::SendValueChanged() {
+    auto event = wxCommandEvent(wxEVT_TEXT, GetId());
+    event.SetEventObject(this);
+    ProcessWindowEvent(event);
+
   }
 
   CLabelSpinVecEdit::CLabelSpinVecEdit(wxWindow * parent, 

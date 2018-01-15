@@ -17,20 +17,21 @@ namespace jd {
     mColorEdit->AddPage(CreateRGBPage(mColorEdit.get()), L"RGB");
     mColorEdit->AddPage(CreateCMYKPage(mColorEdit.get()), L"CMYK");
     mColorEdit->Bind(wxEVT_NOTEBOOK_PAGE_CHANGED, &CColorWindow::OnPageChanged, this);
-
-    //auto buttons = new wxBoxSizer(wxHORIZONTAL);
-    //buttons->AddStretchSpacer(1);
-    //buttons->Add(new wxButton(wx))
     
     auto sizer = new wxBoxSizer(wxVERTICAL);
-    sizer->Add(mColorPanel.get(), 1);
+    sizer->Add(mColorPanel.get(), 1, wxALIGN_CENTER);
     sizer->Add(mColorEdit.get(), 2);
     SetSizerAndFit(sizer);
   }
 
   CColorWindow::~CColorWindow() {}
 
-  void CColorWindow::UpdateGui() {}
+  void CColorWindow::UpdateGui() {
+    auto page = mColorEdit->GetSelection() == 0 ? 0 : 1;
+    SetPageColor(page, mEditedColor);
+    mColorPanel->SetBackgroundColour(mEditedColor);
+    mColorPanel->Refresh();
+  }
 
   wxWindow * CColorWindow::CreateRGBPage(wxWindow* parent) {
     auto panel = new wxPanel(parent);
@@ -43,6 +44,11 @@ namespace jd {
     mGreen = wxmake_shared<CLabelSliderSpinEdit>(panel, L"Green", 0, 0, 255, sliderSize, inputSize, labelSize);
     mBlue = wxmake_shared<CLabelSliderSpinEdit>(panel, L"Blue", 0, 0, 255, sliderSize, inputSize, labelSize);
     mAlpha = wxmake_shared<CLabelSliderSpinEdit>(panel, L"Alpha", 0, 0, 255, sliderSize, inputSize, labelSize);
+
+    mRed->Bind(wxEVT_TEXT, &CColorWindow::OnColorChanged, this);
+    mGreen->Bind(wxEVT_TEXT, &CColorWindow::OnColorChanged, this);
+    mBlue->Bind(wxEVT_TEXT, &CColorWindow::OnColorChanged, this);
+    mAlpha->Bind(wxEVT_TEXT, &CColorWindow::OnColorChanged, this);
 
     sizer->Add(mRed.get());
     sizer->Add(mGreen.get());
@@ -63,6 +69,12 @@ namespace jd {
     mYellow = wxmake_shared<CLabelSliderSpinEdit>(panel, L"Yellow", 0, 0, 100, sliderSize, inputSize, labelSize);
     mBlack = wxmake_shared<CLabelSliderSpinEdit>(panel, L"Black", 0, 0, 100, sliderSize, inputSize, labelSize);
     mAlphaCMYK = wxmake_shared<CLabelSliderSpinEdit>(panel, L"Alpha", 0, 0, 100, sliderSize, inputSize, labelSize);
+
+    mCyan->Bind(wxEVT_TEXT, &CColorWindow::OnColorChanged, this);
+    mMagenta->Bind(wxEVT_TEXT, &CColorWindow::OnColorChanged, this);
+    mYellow->Bind(wxEVT_TEXT, &CColorWindow::OnColorChanged, this);
+    mBlack->Bind(wxEVT_TEXT, &CColorWindow::OnColorChanged, this);
+    mAlphaCMYK->Bind(wxEVT_TEXT, &CColorWindow::OnColorChanged, this);
 
     sizer->Add(mCyan.get());
     sizer->Add(mMagenta.get());
@@ -130,5 +142,13 @@ namespace jd {
 
     auto color = GetPageColor(otherpage);
     SetPageColor(page, color);
+  }
+
+  void CColorWindow::OnColorChanged(wxCommandEvent & event) {
+    auto page = mColorEdit->GetSelection() == 0 ? 0 : 1;
+    
+    mEditedColor = GetPageColor(page);
+    mColorPanel->SetBackgroundColour(mEditedColor);
+    mColorPanel->Refresh();
   }
 }

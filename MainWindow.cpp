@@ -74,7 +74,7 @@ namespace jd {
     mTools[ToolType::CreateCircle] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Circle], mEditors[ShapeType::Circle]);
     mTools[ToolType::Move] = std::make_shared<CMoveShapeTool>(mEditors);
     mTools[ToolType::Size] = std::make_shared<CSizeShapeTool>(mEditors);
-    mTools[ToolType::Color] = std::make_shared<CColorTool>(this);
+    mTools[ToolType::Color] = std::make_shared<CColorTool>(this, toolbar);
   }
 
   CMainWindow::~CMainWindow() {}
