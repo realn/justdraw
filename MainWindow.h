@@ -4,6 +4,7 @@
 #include <map>
 
 #include <wx/frame.h>
+#include <wx/bitmap.h>
 
 #include "Consts.h"
 #include "JDDragContext.h"
@@ -16,6 +17,7 @@ namespace jd {
   class CShapeEditor;
   class CTool;
   class CShapeTool;
+  class CDocument;
 
   using ShapeFactoryMapT = std::map<ShapeType, std::shared_ptr<IShapeFactory>>;
   using ShapeVecT = std::vector<std::shared_ptr<CShape>>;
@@ -26,7 +28,6 @@ namespace jd {
     : public wxFrame {
   private:
     ShapeFactoryMapT mShapeFactories;
-    ShapeVecT mShapes;
     EditorMapT mEditors;
     ToolMapT mTools;
 
@@ -36,7 +37,8 @@ namespace jd {
     wxPanel* mCanvas = nullptr;
     CDragContext mDrag;
 
-    wxImage mBackgroud;
+    std::unique_ptr<CDocument> mDocument;
+    wxBitmap mBuffer;
     std::wstring mFileName;
 
   public:
@@ -49,10 +51,8 @@ namespace jd {
     void Clear();
 
   private:
-    void DrawShapes(wxDC& dev, bool drawPreview = true);
-    void DrawBackground(wxDC& dev);
+    void Draw();
 
-    std::shared_ptr<CShape> FindShapeOnPoint(wxPoint const& point, float range) const;
     CShapeEditor& GetEditor() const { return *mEditors.at(mCurrentShapeType); }
     CTool& GetTool() const { return *mTools.at(mCurrentToolType); }
     std::shared_ptr<CShapeTool> GetShapeTool() const;

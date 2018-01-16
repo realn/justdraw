@@ -98,5 +98,8 @@
     <ClCompile Include="JDTools.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="JDDocument.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

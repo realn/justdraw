@@ -9,6 +9,7 @@
 #include <wx/dcmemory.h>
 
 #include "Defines.h"
+#include "JDDocument.h"
 #include "JDShape.h"
 #include "JDShapeFactory.h"
 #include "JDShapeEditors.h"
@@ -87,15 +88,18 @@ namespace jd {
     mTools[ToolType::Size] = std::make_shared<CSizeShapeTool>(mEditors);
     mTools[ToolType::Color] = std::make_shared<CColorTool>(this, toolbar, shColor);
 
-    Clear();
+    mDocument = std::make_unique<CDocument>(wxSize(512, 512));
+    mBuffer = wxBitmap(mDocument->GetSize(), 32);
+    Draw();
   }
 
   CMainWindow::~CMainWindow() {}
 
   void CMainWindow::New() {
-    if(!mFileName.empty()) {
-
-    }
+    mFileName = L"";
+    mDocument = std::make_unique<CDocument>(wxSize(512, 512));
+    Draw();
+    Refresh();
   }
 
   void CMainWindow::Save() {
@@ -107,13 +111,8 @@ namespace jd {
       mFileName = filename;
     }
 
-    auto bmp = wxBitmap(mBackgroud.GetSize(), 32);
-    {
-      wxMemoryDC mem(bmp);
-      DrawBackground(mem);
-      DrawShapes(mem, false);
-    }
-    bmp.SaveFile(mFileName, wxBITMAP_TYPE_PNG);
+    Draw();
+    mBuffer.SaveFile(mFileName, wxBITMAP_TYPE_PNG);
   }
 
   void CMainWindow::Load() {
@@ -125,35 +124,11 @@ namespace jd {
   }
 
   void CMainWindow::Clear() {
-    mShapes.clear();
-    mBackgroud = wxImage(512, 512);
-    mBackgroud.Clear(255);
   }
 
-  void CMainWindow::DrawShapes(wxDC & dev, bool drawPreview) {
-    for(auto& shape : mShapes) {
-      shape->Draw(dev);
-    }
-
-    if(mCurrentToolType != ToolType::None && drawPreview) {
-      auto tool = GetShapeTool();
-      if(tool) {
-        tool->DrawPreview(dev);
-      }
-    }
-  }
-
-  void CMainWindow::DrawBackground(wxDC & dev) {
-    dev.DrawBitmap(mBackgroud, 0, 0, false);
-  }
-
-  std::shared_ptr<CShape> CMainWindow::FindShapeOnPoint(wxPoint const & point, float range) const {
-    for(auto& shape : mShapes) {
-      if(shape->IsInMoveBounds(point, range)) {
-        return shape;
-      }
-    }
-    return std::shared_ptr<CShape>();
+  void CMainWindow::Draw() {
+    wxMemoryDC dev(mBuffer);
+    mDocument->Draw(dev);
   }
 
   std::shared_ptr<CShapeTool> CMainWindow::GetShapeTool() const {
@@ -170,6 +145,7 @@ namespace jd {
     mCurrentToolType = wxid<ToolType>(event.GetId());
     GetTool().Execute();
 
+    Draw();
     GetSizer()->Layout();
   }
 
@@ -185,8 +161,9 @@ namespace jd {
       if(tool) {
         auto result = tool->Finish();
         for(auto& shape : result) {
-          mShapes.push_back(shape);
+          mDocument->AddShape(shape);
         }
+        Draw();
       }
     }
     else if(event.GetButton() == wxMOUSE_BTN_RIGHT) {
@@ -222,7 +199,7 @@ namespace jd {
       if(mCurrentToolType != ToolType::None) {
         auto tool = GetShapeTool();
         if(tool) {
-          auto shape = FindShapeOnPoint(event.GetPosition(), 4.0f);
+          auto shape =  mDocument->FindShapeOnPoint(event.GetPosition(), 4.0f);
           auto cursor = tool->OnShapeHover(shape, event.GetPosition());
           SetCursor(cursor);
 
@@ -242,8 +219,14 @@ namespace jd {
 
   void CMainWindow::OnCanvasPaint(wxPaintEvent & event) {
     wxPaintDC dev(mCanvas);
-    DrawBackground(dev);
-    DrawShapes(dev);
+    dev.DrawBitmap(mBuffer, 0, 0);
+
+    if(mCurrentToolType != ToolType::None) {
+      auto tool = GetShapeTool();
+      if(tool) {
+        tool->DrawPreview(dev);
+      }
+    }
   }
 
   void CMainWindow::OnShapeCreateButtonClicked(wxCommandEvent & event) {
@@ -252,8 +235,9 @@ namespace jd {
       tool->Start(wxPoint());
       auto shapes = tool->Finish();
       for(auto& shape : shapes) {
-        mShapes.push_back(shape);
+        mDocument->AddShape(shape);
       }
+      Draw();
       Refresh();
     }
   }

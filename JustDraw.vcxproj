@@ -142,6 +142,7 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="JDColorEditor.cpp" />
+    <ClCompile Include="JDDocument.cpp" />
     <ClCompile Include="JDLayer.cpp" />
     <ClCompile Include="JDShape.cpp" />
     <ClCompile Include="JDShapeEditors.cpp" />
