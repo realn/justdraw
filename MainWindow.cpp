@@ -49,7 +49,7 @@ namespace jd {
 
     mCanvas = new wxPanel(this);
     mCanvas->SetDoubleBuffered(true);
-    mCanvas->SetBackgroundColour(*wxWHITE);
+    //mCanvas->SetBackgroundColour(*wxWHITE);
     mCanvas->Bind(wxEVT_LEFT_UP, &CMainWindow::OnCanvasMouseUp, this);
     mCanvas->Bind(wxEVT_RIGHT_UP, &CMainWindow::OnCanvasMouseUp, this);
     mCanvas->Bind(wxEVT_LEFT_DOWN, &CMainWindow::OnCanvasMouseDown, this);
@@ -113,6 +113,7 @@ namespace jd {
       DrawBackground(mem);
       DrawShapes(mem, false);
     }
+    bmp.SaveFile(mFileName, wxBITMAP_TYPE_PNG);
   }
 
   void CMainWindow::Load() {

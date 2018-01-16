@@ -37,7 +37,7 @@ namespace jd {
     virtual ShapeVecT Finish() = 0;
     virtual void Cancel() override = 0;
 
-    virtual void DrawPreview(wxClientDC& dc) = 0;
+    virtual void DrawPreview(wxDC& dc) = 0;
   };
 
   class CColorTool 

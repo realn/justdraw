@@ -50,7 +50,7 @@ namespace jd {
     mShape.reset();
   }
 
-  void CCreateShapeTool::DrawPreview(wxClientDC & dc) {
+  void CCreateShapeTool::DrawPreview(wxDC & dc) {
     if(mShape && mWasUpdate) {
       mShape->SetFillColor(*mColor);
       mShape->Draw(dc);
@@ -106,7 +106,7 @@ namespace jd {
     mSelectedShape.reset();
   }
 
-  void CMoveShapeTool::DrawPreview(wxClientDC & dc) {
+  void CMoveShapeTool::DrawPreview(wxDC & dc) {
     if(mSelectedShape) {
       auto brush = wxBrush(*wxBLACK, wxBrushStyle::wxBRUSHSTYLE_SOLID);
       auto rect = mSelectedShape->GetBoundingRect();
@@ -194,7 +194,7 @@ namespace jd {
     mSelectedShape.reset();
   }
 
-  void CSizeShapeTool::DrawPreview(wxClientDC & dc) {
+  void CSizeShapeTool::DrawPreview(wxDC & dc) {
     if(mHoverShape) {
       DrawPoints(dc, mHoverShape->GetControlPoints());
     }
@@ -206,7 +206,7 @@ namespace jd {
   std::shared_ptr<CShapeEditor> CSizeShapeTool::GetEditor() const {
     return mEditors.at(mSelectedShape->GetType());
   }
-  void CSizeShapeTool::DrawPoints(wxClientDC & dc, PointVecT const & points) const {
+  void CSizeShapeTool::DrawPoints(wxDC & dc, PointVecT const & points) const {
     dc.SetBrush(*wxBLACK_BRUSH);
 
     for(auto& point : points) {
