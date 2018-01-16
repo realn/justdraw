@@ -15,25 +15,67 @@ namespace jd {
 
   class CFilter {
   protected:
-    wxSize mMaskSize;
+    glm::ivec2 mMaskSize;
 
   public:
-    CFilter(wxSize const& maskSize) : mMaskSize(maskSize) {}
+    CFilter(wxSize const& maskSize) : mMaskSize(maskSize.x, maskSize.y) {}
     virtual ~CFilter() {}
 
-    virtual RGB Execute(RGB* data, wxPoint const& pos, wxSize const& size) = 0;
-
-  protected:
-    std::vector<RGB*> GetMaskData(RGB* data, glm::ivec2 const& pos, glm::ivec2 const& size) const;
+    virtual void Execute(RGB& dst, RGB* data, glm::ivec2 const& pos, glm::ivec2 const& size) = 0;
   };
 
   class CMediumFilter :
     public CFilter {
   public:
-    CMediumFilter(wxSize const& maskSize);
-    virtual ~CMediumFilter();
+    CMediumFilter(wxSize const& maskSize)
+      : CFilter(maskSize) {}
+    virtual ~CMediumFilter() {}
 
     // Inherited via CFilter
-    virtual RGB Execute(RGB* data, wxPoint const & pos, wxSize const & size) override;
+    virtual void Execute(RGB& dst, RGB* data, glm::ivec2 const& pos, glm::ivec2 const& size) override;
+  };
+
+  class CMedianFilter :
+    public CFilter {
+  public:
+    CMedianFilter(wxSize const& maskSize)
+      : CFilter(maskSize) {}
+    virtual ~CMedianFilter() {}
+
+    // Inherited via CFilter
+    virtual void Execute(RGB& dst, RGB* data, glm::ivec2 const& pos, glm::ivec2 const& size) override;
+  };
+
+  class CEdgeFilter :
+    public CFilter {
+  public:
+    CEdgeFilter(wxSize const& maskSize)
+      : CFilter(maskSize) {}
+    virtual ~CEdgeFilter() {}
+
+    // Inherited via CFilter
+    virtual void Execute(RGB& dst, RGB* data, glm::ivec2 const& pos, glm::ivec2 const& size) override;
+  };
+
+  class CMaxFilter :
+    public CFilter {
+  public:
+    CMaxFilter(wxSize const& maskSize)
+      : CFilter(maskSize) {}
+    virtual ~CMaxFilter() {}
+
+    // Inherited via CFilter
+    virtual void Execute(RGB& dst, RGB* data, glm::ivec2 const& pos, glm::ivec2 const& size) override;
+  };
+
+  class CMinFilter :
+    public CFilter {
+  public:
+    CMinFilter(wxSize const& maskSize)
+      : CFilter(maskSize) {}
+    virtual ~CMinFilter() {}
+
+    // Inherited via CFilter
+    virtual void Execute(RGB& dst, RGB* data, glm::ivec2 const& pos, glm::ivec2 const& size) override;
   };
 }

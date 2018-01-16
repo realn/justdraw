@@ -20,6 +20,10 @@ namespace jd {
     SaveFile,
     OpenFile,
     FilterMedium,
+    FilterMedian,
+    FilterEdge,
+    FilterMax,
+    FilterMin
   };
 
   enum class Freedom {

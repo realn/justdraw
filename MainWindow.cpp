@@ -21,6 +21,7 @@
 using namespace std::string_literals;
 
 namespace jd {
+  static const auto DOC_SIZE = wxSize(128, 128);
   static const auto STR_BMP_TOOL_LINE = L"assets/tool_line.png"s;
   static const auto STR_BMP_TOOL_RECT = L"assets/tool_rect.png"s;
   static const auto STR_BMP_TOOL_SPHERE = L"assets/tool_sphere.png"s;
@@ -36,9 +37,9 @@ namespace jd {
     wxBitmap whiteBitmap(32, 32);
 
     auto toolbar = CreateToolBar();
-    toolbar->AddTool(wxid(ToolType::NewFile), L"New", whiteBitmap);
-    toolbar->AddTool(wxid(ToolType::SaveFile), L"Save", whiteBitmap);
-    toolbar->AddTool(wxid(ToolType::OpenFile), L"Open", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::NewFile), L"New", whiteBitmap, "New");
+    toolbar->AddTool(wxid(ToolType::SaveFile), L"Save", whiteBitmap, "Save");
+    toolbar->AddTool(wxid(ToolType::OpenFile), L"Open", whiteBitmap, "Open");
     toolbar->AddSeparator();
     toolbar->AddTool(wxid(ToolType::CreateLine), L"Line", wxBitmap(STR_BMP_TOOL_LINE, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::CreateRect), L"Rect", wxBitmap(STR_BMP_TOOL_RECT, wxBITMAP_TYPE_PNG));
@@ -48,7 +49,11 @@ namespace jd {
     toolbar->AddTool(wxid(ToolType::Size), L"Size", wxBitmap(STR_BMP_TOOL_SIZE, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::Color), L"Color", whiteBitmap);
     toolbar->AddSeparator();
-    toolbar->AddTool(wxid(ToolType::FilterMedium), L"Medium", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::FilterMedium), L"Medium", whiteBitmap, "Medium Filter");
+    toolbar->AddTool(wxid(ToolType::FilterMedian), L"Median", whiteBitmap, "Median Filter");
+    toolbar->AddTool(wxid(ToolType::FilterEdge), L"Edge", whiteBitmap, "Edge Filter");
+    toolbar->AddTool(wxid(ToolType::FilterMax), L"Max", whiteBitmap, "Max Filter");
+    toolbar->AddTool(wxid(ToolType::FilterMin), L"Min", whiteBitmap, "Min Filter");
     toolbar->Realize();
 
     mCanvas = new wxPanel(this);
@@ -91,8 +96,12 @@ namespace jd {
     mTools[ToolType::Size] = std::make_shared<CSizeShapeTool>(mEditors);
     mTools[ToolType::Color] = std::make_shared<CColorTool>(this, toolbar, shColor);
     mTools[ToolType::FilterMedium] = std::make_shared<CFilterTool<CMediumFilter>>(this, wxSize(3, 3));
+    mTools[ToolType::FilterMedian] = std::make_shared<CFilterTool<CMedianFilter>>(this, wxSize(3, 3));
+    mTools[ToolType::FilterEdge] = std::make_shared<CFilterTool<CEdgeFilter>>(this, wxSize(3, 3));
+    mTools[ToolType::FilterMax] = std::make_shared<CFilterTool<CMaxFilter>>(this, wxSize(3, 3));
+    mTools[ToolType::FilterMin] = std::make_shared<CFilterTool<CMinFilter>>(this, wxSize(3, 3));
 
-    mDocument = std::make_unique<CDocument>(wxSize(512, 512));
+    mDocument = std::make_unique<CDocument>(DOC_SIZE);
     mBuffer = wxBitmap(mDocument->GetSize(), 32);
     Draw();
   }
@@ -101,7 +110,7 @@ namespace jd {
 
   void CMainWindow::New() {
     mFileName = L"";
-    mDocument = std::make_unique<CDocument>(wxSize(512, 512));
+    mDocument = std::make_unique<CDocument>(DOC_SIZE);
     mBuffer = wxBitmap(mDocument->GetSize(), 32);
     Draw();
     Refresh();
@@ -223,6 +232,7 @@ namespace jd {
 
           tool->Update(event.GetPosition());
 
+          Draw();
           Refresh();
         }
       }

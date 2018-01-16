@@ -69,7 +69,7 @@ namespace jd {
     auto bmpsrc = &bmp1;
     auto bmpdst = &bmp2;
 
-    auto size = bmp1.GetSize();
+    auto size = glm::ivec2(bmp1.GetSize().x, bmp1.GetSize().y);
 
     for(auto& filter : mFilters) {
       auto datasrc = reinterpret_cast<RGB*>(bmpsrc->GetData());
@@ -79,11 +79,11 @@ namespace jd {
         for(auto x = 0; x < size.x; x++) {
           auto idx = y * size.x + x;
 
-          datadst[idx] = filter->Execute(datasrc, wxPoint(x, y), size);
+           filter->Execute(datadst[idx], datasrc, glm::ivec2(x, y), size);
         }
       }
 
-      std::swap(datasrc, datadst);
+      std::swap(bmpsrc, bmpdst);
     }
 
     dev.DrawBitmap(*bmpsrc, 0, 0);
