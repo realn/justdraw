@@ -21,10 +21,10 @@ namespace jd {
     CFilter(wxSize const& maskSize) : mMaskSize(maskSize) {}
     virtual ~CFilter() {}
 
-    virtual RGB Execute(RGB const* data, wxPoint const& pos, wxSize const& size) = 0;
+    virtual RGB Execute(RGB* data, wxPoint const& pos, wxSize const& size) = 0;
 
   protected:
-    std::vector<RGB> GetMaskData(RGB const* data, glm::ivec2 const& pos, glm::ivec2 const& size) const;
+    std::vector<RGB*> GetMaskData(RGB* data, glm::ivec2 const& pos, glm::ivec2 const& size) const;
   };
 
   class CMediumFilter :
@@ -34,6 +34,6 @@ namespace jd {
     virtual ~CMediumFilter();
 
     // Inherited via CFilter
-    virtual RGB Execute(RGB const * data, wxPoint const & pos, wxSize const & size) override;
+    virtual RGB Execute(RGB* data, wxPoint const & pos, wxSize const & size) override;
   };
 }

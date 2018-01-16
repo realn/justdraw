@@ -84,4 +84,16 @@ namespace jd {
   }
 
   void CFileTool::Cancel() {}
+
+  CFilterToolBase::CFilterToolBase(CMainWindow* mainWindow) : mMain(mainWindow) {}
+
+  CFilterToolBase::~CFilterToolBase() {}
+
+  void CFilterToolBase::Execute() {
+    auto filter = CreateFilter();
+    mMain->AddFilter(filter);
+  }
+
+  void CFilterToolBase::Cancel() {}
+
 }

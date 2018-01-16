@@ -7,6 +7,7 @@
 #include <wx/dcclient.h>
 
 class wxToolBar;
+class CFilter;
 
 namespace jd {
   class CShape;
@@ -75,5 +76,37 @@ namespace jd {
     // Inherited via CTool
     virtual void Execute() override;
     virtual void Cancel() override;
+  };
+
+  class CFilterToolBase 
+    : public CTool
+  {
+  private:
+    CMainWindow * mMain;
+
+  public:
+    CFilterToolBase(CMainWindow* mainWindow);
+    virtual ~CFilterToolBase();
+
+    // Inherited via CTool
+    virtual void Execute() override;
+    virtual void Cancel() override;
+
+  protected:
+    virtual std::shared_ptr<CFilter> CreateFilter() const = 0;
+  };
+
+  template<class _Type>
+  class CFilterTool
+    : public CFilterToolBase {
+  private:
+    wxSize mMaskSize;
+
+  public:
+    CFilterTool(CMainWindow* mainWindow, wxSize const& size) : CFilterToolBase(mainWindow), mMaskSize(size) {}
+    virtual ~CFilterTool() {}
+
+  protected:
+    std::shared_ptr<CFilter> CreateFilter() const override { return std::make_shared<_Type>(mMaskSize); }
   };
 }

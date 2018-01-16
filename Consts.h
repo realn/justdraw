@@ -18,7 +18,8 @@ namespace jd {
     Color,
     NewFile,
     SaveFile,
-    OpenFile
+    OpenFile,
+    FilterMedium,
   };
 
   enum class Freedom {

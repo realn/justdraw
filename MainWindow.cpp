@@ -14,6 +14,7 @@
 #include "JDShapeFactory.h"
 #include "JDShapeEditors.h"
 #include "JDShapeTools.h"
+#include "JDFilters.h"
 
 #include "MainWindow.h"
 
@@ -46,6 +47,8 @@ namespace jd {
     toolbar->AddTool(wxid(ToolType::Move), L"Move", wxBitmap(STR_BMP_TOOL_MOVE, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::Size), L"Size", wxBitmap(STR_BMP_TOOL_SIZE, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::Color), L"Color", whiteBitmap);
+    toolbar->AddSeparator();
+    toolbar->AddTool(wxid(ToolType::FilterMedium), L"Medium", whiteBitmap);
     toolbar->Realize();
 
     mCanvas = new wxPanel(this);
@@ -87,6 +90,7 @@ namespace jd {
     mTools[ToolType::Move] = std::make_shared<CMoveShapeTool>(mEditors);
     mTools[ToolType::Size] = std::make_shared<CSizeShapeTool>(mEditors);
     mTools[ToolType::Color] = std::make_shared<CColorTool>(this, toolbar, shColor);
+    mTools[ToolType::FilterMedium] = std::make_shared<CFilterTool<CMediumFilter>>(this, wxSize(3, 3));
 
     mDocument = std::make_unique<CDocument>(wxSize(512, 512));
     mBuffer = wxBitmap(mDocument->GetSize(), 32);
@@ -135,6 +139,10 @@ namespace jd {
   void CMainWindow::Clear() {
   }
 
+  void CMainWindow::AddFilter(std::shared_ptr<CFilter> filter) {
+    mDocument->AddFilter(filter);
+  }
+
   void CMainWindow::Draw() {
     wxMemoryDC dev(mBuffer);
     mDocument->Draw(dev);
@@ -156,6 +164,7 @@ namespace jd {
 
     Draw();
     GetSizer()->Layout();
+    Refresh();
   }
 
   void CMainWindow::OnCanvasMouseUp(wxMouseEvent & event) {

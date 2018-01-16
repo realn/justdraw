@@ -23,7 +23,9 @@ namespace jd {
     mShapes.push_back(shape);
   }
 
-  void CDocument::AddFilter(std::shared_ptr<CFilter> filter) {}
+  void CDocument::AddFilter(std::shared_ptr<CFilter> filter) {
+    mFilters.push_back(filter);
+  }
 
   void CDocument::Draw(wxDC & dev) {
     if(mFilters.empty()) {

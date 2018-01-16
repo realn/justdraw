@@ -18,6 +18,7 @@ namespace jd {
   class CTool;
   class CShapeTool;
   class CDocument;
+  class CFilter;
 
   using ShapeFactoryMapT = std::map<ShapeType, std::shared_ptr<IShapeFactory>>;
   using ShapeVecT = std::vector<std::shared_ptr<CShape>>;
@@ -49,6 +50,8 @@ namespace jd {
     void Save();
     void Load();
     void Clear();
+
+    void AddFilter(std::shared_ptr<CFilter> filter);
 
   private:
     void Draw();
