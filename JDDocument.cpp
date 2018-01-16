@@ -1,4 +1,7 @@
 
+#include <wx\dcmemory.h>
+
+#include "JDFilters.h"
 #include "JDShape.h"
 #include "JDDocument.h"
 
@@ -20,9 +23,22 @@ namespace jd {
     mShapes.push_back(shape);
   }
 
+  void CDocument::AddFilter(std::shared_ptr<CFilter> filter) {}
+
   void CDocument::Draw(wxDC & dev) {
-    DrawBackground(dev);
-    DrawShapes(dev);
+    if(mFilters.empty()) {
+      DrawBackground(dev);
+      DrawShapes(dev);
+    }
+    else {
+      auto bmp = wxBitmap(GetSize());
+      {
+        wxMemoryDC memDev(bmp);
+        DrawBackground(memDev);
+        DrawShapes(memDev);
+      }
+      ApplyFilters(dev, bmp);
+    }
   }
 
   std::shared_ptr<CShape> CDocument::FindShapeOnPoint(wxPoint const & point, float range) const {
@@ -42,5 +58,32 @@ namespace jd {
 
   void CDocument::DrawBackground(wxDC & dev) {
     dev.DrawBitmap(mBackground, 0, 0, false);
+  }
+
+  void CDocument::ApplyFilters(wxDC & dev, wxBitmap const& src) {
+    auto bmp1 = src.ConvertToImage();
+    auto bmp2 = bmp1;
+    
+    auto bmpsrc = &bmp1;
+    auto bmpdst = &bmp2;
+
+    auto size = bmp1.GetSize();
+
+    for(auto& filter : mFilters) {
+      auto datasrc = reinterpret_cast<RGB*>(bmpsrc->GetData());
+      auto datadst = reinterpret_cast<RGB*>(bmpdst->GetData());
+
+      for(auto y = 0; y < size.y; y++) {
+        for(auto x = 0; x < size.x; x++) {
+          auto idx = y * size.x + x;
+
+          datadst[idx] = filter->Execute(datasrc, wxPoint(x, y), size);
+        }
+      }
+
+      std::swap(datasrc, datadst);
+    }
+
+    dev.DrawBitmap(*bmpsrc, 0, 0);
   }
 }

@@ -128,6 +128,7 @@
     <ClInclude Include="JDColorEditor.h" />
     <ClInclude Include="JDDocument.h" />
     <ClInclude Include="JDDragContext.h" />
+    <ClInclude Include="JDFilters.h" />
     <ClInclude Include="JDLayer.h" />
     <ClInclude Include="JDShape.h" />
     <ClInclude Include="JDShapeFactory.h" />
@@ -143,6 +144,7 @@
     <ClCompile Include="Controls.cpp" />
     <ClCompile Include="JDColorEditor.cpp" />
     <ClCompile Include="JDDocument.cpp" />
+    <ClCompile Include="JDFilters.cpp" />
     <ClCompile Include="JDLayer.cpp" />
     <ClCompile Include="JDShape.cpp" />
     <ClCompile Include="JDShapeEditors.cpp" />
