@@ -98,6 +98,7 @@ namespace jd {
   void CMainWindow::New() {
     mFileName = L"";
     mDocument = std::make_unique<CDocument>(wxSize(512, 512));
+    mBuffer = wxBitmap(mDocument->GetSize(), 32);
     Draw();
     Refresh();
   }
@@ -117,10 +118,18 @@ namespace jd {
 
   void CMainWindow::Load() {
     auto filename = wxLoadFileSelector(L"PNG Image", L"png", wxEmptyString, this);
-    if(!filename.empty()) {
-
-      mFileName = filename;
+    if(filename.empty()) {
+      return;
     }
+    auto doc = std::make_unique<CDocument>(filename.ToStdWstring());
+    if(!doc->isOk()) {
+      return;
+    }
+
+    mDocument = std::move(doc);
+    mBuffer = wxBitmap(mDocument->GetSize(), 32);
+    mFileName = filename;
+    Draw();
   }
 
   void CMainWindow::Clear() {
