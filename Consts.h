@@ -15,7 +15,10 @@ namespace jd {
     CreateCircle,
     Move,
     Size,
-    Color
+    Color,
+    NewFile,
+    SaveFile,
+    OpenFile
   };
 
   enum class Freedom {

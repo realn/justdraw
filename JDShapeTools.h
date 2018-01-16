@@ -35,7 +35,7 @@ namespace jd {
     virtual void Update(wxPoint const & pt) override;
     virtual ShapeVecT Finish() override;
     virtual void Cancel() override;
-    virtual void DrawPreview(wxClientDC & dc) override;
+    virtual void DrawPreview(wxDC & dc) override;
   };
 
   class CMoveShapeTool
@@ -57,7 +57,7 @@ namespace jd {
     virtual void Update(wxPoint const & pt) override;
     virtual ShapeVecT Finish() override;
     virtual void Cancel() override;
-    virtual void DrawPreview(wxClientDC & dc) override;
+    virtual void DrawPreview(wxDC & dc) override;
 
   private:
     std::shared_ptr<CShapeEditor> GetEditor() const;
@@ -83,10 +83,10 @@ namespace jd {
     virtual void Update(wxPoint const & pt) override;
     virtual ShapeVecT Finish() override;
     virtual void Cancel() override;
-    virtual void DrawPreview(wxClientDC & dc) override;
+    virtual void DrawPreview(wxDC & dc) override;
 
   private:
     std::shared_ptr<CShapeEditor> GetEditor() const;
-    void DrawPoints(wxClientDC& dc, PointVecT const& points) const;
+    void DrawPoints(wxDC& dc, PointVecT const& points) const;
   };
 }

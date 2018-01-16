@@ -26,7 +26,7 @@ namespace jd {
     return Freedom::Full;
   }
 
-  void CLineShape::Draw(wxClientDC & dc) {
+  void CLineShape::Draw(wxDC & dc) {
     dc.SetBrush(mColor);
     dc.DrawLine(mA, mB);
   }
@@ -100,7 +100,7 @@ namespace jd {
     return Freedom::None;
   }
 
-  void CRectShape::Draw(wxClientDC & dc) {
+  void CRectShape::Draw(wxDC & dc) {
     dc.SetBrush(mColor);
     dc.DrawRectangle(mOrigin, mSize);
   }
@@ -170,7 +170,7 @@ namespace jd {
     return Freedom::None;
   }
 
-  void CCircleShape::Draw(wxClientDC & dc) {
+  void CCircleShape::Draw(wxDC & dc) {
     dc.SetBrush(mColor);
     dc.DrawCircle(mOrigin, mRadius);
   }

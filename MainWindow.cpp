@@ -5,6 +5,8 @@
 #include <wx/sizer.h>
 #include <wx/button.h>
 #include <wx/textctrl.h>
+#include <wx/filedlg.h>
+#include <wx/dcmemory.h>
 
 #include "Defines.h"
 #include "JDShape.h"
@@ -32,6 +34,10 @@ namespace jd {
     wxBitmap whiteBitmap(32, 32);
 
     auto toolbar = CreateToolBar();
+    toolbar->AddTool(wxid(ToolType::NewFile), L"New", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::SaveFile), L"Save", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::OpenFile), L"Open", whiteBitmap);
+    toolbar->AddSeparator();
     toolbar->AddTool(wxid(ToolType::CreateLine), L"Line", wxBitmap(STR_BMP_TOOL_LINE, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::CreateRect), L"Rect", wxBitmap(STR_BMP_TOOL_RECT, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::CreateCircle), L"Circle", wxBitmap(STR_BMP_TOOL_SPHERE, wxBITMAP_TYPE_PNG));
@@ -71,27 +77,73 @@ namespace jd {
 
     auto shColor = std::make_shared<wxColor>(0, 0, 0, 255);
 
+    mTools[ToolType::NewFile] = std::make_shared<CFileTool>(CFileTool::FileToolType::New, this);
+    mTools[ToolType::SaveFile] = std::make_shared<CFileTool>(CFileTool::FileToolType::Save, this);
+    mTools[ToolType::OpenFile] = std::make_shared<CFileTool>(CFileTool::FileToolType::Open, this);
     mTools[ToolType::CreateLine] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Line], mEditors[ShapeType::Line], shColor);
     mTools[ToolType::CreateRect] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Rect], mEditors[ShapeType::Rect], shColor);
     mTools[ToolType::CreateCircle] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Circle], mEditors[ShapeType::Circle], shColor);
     mTools[ToolType::Move] = std::make_shared<CMoveShapeTool>(mEditors);
     mTools[ToolType::Size] = std::make_shared<CSizeShapeTool>(mEditors);
     mTools[ToolType::Color] = std::make_shared<CColorTool>(this, toolbar, shColor);
+
+    Clear();
   }
 
   CMainWindow::~CMainWindow() {}
 
-  void CMainWindow::DrawShapes(wxClientDC & dev) {
+  void CMainWindow::New() {
+    if(!mFileName.empty()) {
+
+    }
+  }
+
+  void CMainWindow::Save() {
+    if(mFileName.empty()) {
+      auto filename = wxSaveFileSelector(L"PNG Image", L"png", wxEmptyString, this);
+      if(filename.empty()) {
+        return;
+      }
+      mFileName = filename;
+    }
+
+    auto bmp = wxBitmap(mBackgroud.GetSize(), 32);
+    {
+      wxMemoryDC mem(bmp);
+      DrawBackground(mem);
+      DrawShapes(mem, false);
+    }
+  }
+
+  void CMainWindow::Load() {
+    auto filename = wxLoadFileSelector(L"PNG Image", L"png", wxEmptyString, this);
+    if(!filename.empty()) {
+
+      mFileName = filename;
+    }
+  }
+
+  void CMainWindow::Clear() {
+    mShapes.clear();
+    mBackgroud = wxImage(512, 512);
+    mBackgroud.Clear(255);
+  }
+
+  void CMainWindow::DrawShapes(wxDC & dev, bool drawPreview) {
     for(auto& shape : mShapes) {
       shape->Draw(dev);
     }
 
-    if(mCurrentToolType != ToolType::None) {
+    if(mCurrentToolType != ToolType::None && drawPreview) {
       auto tool = GetShapeTool();
       if(tool) {
         tool->DrawPreview(dev);
       }
     }
+  }
+
+  void CMainWindow::DrawBackground(wxDC & dev) {
+    dev.DrawBitmap(mBackgroud, 0, 0, false);
   }
 
   std::shared_ptr<CShape> CMainWindow::FindShapeOnPoint(wxPoint const & point, float range) const {
@@ -189,6 +241,7 @@ namespace jd {
 
   void CMainWindow::OnCanvasPaint(wxPaintEvent & event) {
     wxPaintDC dev(mCanvas);
+    DrawBackground(dev);
     DrawShapes(dev);
   }
 

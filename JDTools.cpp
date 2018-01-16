@@ -2,6 +2,7 @@
 #include <wx\toolbar.h>
 
 #include "Consts.h"
+#include "MainWindow.h"
 #include "JDColorEditor.h"
 #include "JDTools.h"
 
@@ -59,4 +60,28 @@ namespace jd {
 
   void CColorTool::Cancel() {}
 
+
+  CFileTool::CFileTool(FileToolType const type, CMainWindow* mainWindow) 
+    : mType(type), mMain(mainWindow)
+  {}
+
+  CFileTool::~CFileTool() {}
+
+  void CFileTool::Execute() {
+    switch(mType) {
+    case FileToolType::New:
+      mMain->New();
+      break;
+    case FileToolType::Save:
+      mMain->Save();
+      break;
+    case FileToolType::Open:
+      mMain->Load();
+      break;
+    default:
+      break;
+    }
+  }
+
+  void CFileTool::Cancel() {}
 }

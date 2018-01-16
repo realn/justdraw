@@ -36,12 +36,22 @@ namespace jd {
     wxPanel* mCanvas = nullptr;
     CDragContext mDrag;
 
+    wxImage mBackgroud;
+    std::wstring mFileName;
+
   public:
     CMainWindow();
     virtual ~CMainWindow();
 
+    void New();
+    void Save();
+    void Load();
+    void Clear();
+
   private:
-    void DrawShapes(wxClientDC& dev);
+    void DrawShapes(wxDC& dev, bool drawPreview = true);
+    void DrawBackground(wxDC& dev);
+
     std::shared_ptr<CShape> FindShapeOnPoint(wxPoint const& point, float range) const;
     CShapeEditor& GetEditor() const { return *mEditors.at(mCurrentShapeType); }
     CTool& GetTool() const { return *mTools.at(mCurrentToolType); }

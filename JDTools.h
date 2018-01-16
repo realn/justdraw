@@ -10,6 +10,7 @@ class wxToolBar;
 
 namespace jd {
   class CShape;
+  class CMainWindow;
 
   using ShapeVecT = std::vector<std::shared_ptr<CShape>>;
 
@@ -51,6 +52,27 @@ namespace jd {
     CColorTool(wxWindow* parent, wxToolBar* toolBar, std::shared_ptr<wxColor> color);
     virtual ~CColorTool();
 
+    virtual void Execute() override;
+    virtual void Cancel() override;
+  };
+
+  class CFileTool 
+    : public CTool
+  {
+  public:
+    enum class FileToolType {
+      New, Save, Open
+    };
+
+  private:
+    FileToolType mType;
+    CMainWindow* mMain;
+
+  public:
+    CFileTool(FileToolType const type, CMainWindow* mainWindow);
+    virtual ~CFileTool();
+
+    // Inherited via CTool
     virtual void Execute() override;
     virtual void Cancel() override;
   };

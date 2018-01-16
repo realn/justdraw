@@ -24,7 +24,7 @@ namespace jd {
     virtual PointVecT GetControlPoints() const = 0;
     virtual Freedom GetControlPointFreedom(size_t index) = 0;
 
-    virtual void Draw(wxClientDC& dc) = 0;
+    virtual void Draw(wxDC& dc) = 0;
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) = 0;
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const = 0;
     virtual void Move(wxPoint const& dist) = 0;
@@ -52,7 +52,7 @@ namespace jd {
     virtual PointVecT GetControlPoints() const override;
     virtual Freedom GetControlPointFreedom(size_t index) override;
 
-    virtual void Draw(wxClientDC & dc) override;
+    virtual void Draw(wxDC & dc) override;
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;
@@ -79,7 +79,7 @@ namespace jd {
     virtual PointVecT GetControlPoints() const override;
     virtual Freedom GetControlPointFreedom(size_t index) override;
 
-    virtual void Draw(wxClientDC & dc) override;
+    virtual void Draw(wxDC & dc) override;
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;
@@ -106,7 +106,7 @@ namespace jd {
     virtual PointVecT GetControlPoints() const override;
     virtual Freedom GetControlPointFreedom(size_t index) override;
 
-    virtual void Draw(wxClientDC & dc) override;
+    virtual void Draw(wxDC & dc) override;
     virtual void SetByPoints(wxPoint const& pt1, wxPoint const& pt2) override;
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;
