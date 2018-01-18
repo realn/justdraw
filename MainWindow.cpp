@@ -21,7 +21,7 @@
 using namespace std::string_literals;
 
 namespace jd {
-  static const auto DOC_SIZE = wxSize(128, 128);
+  static const auto DOC_SIZE = wxSize(256, 256);
   static const auto STR_BMP_TOOL_LINE = L"assets/tool_line.png"s;
   static const auto STR_BMP_TOOL_RECT = L"assets/tool_rect.png"s;
   static const auto STR_BMP_TOOL_SPHERE = L"assets/tool_sphere.png"s;
@@ -101,9 +101,7 @@ namespace jd {
     mTools[ToolType::FilterMax] = std::make_shared<CFilterTool<CMaxFilter>>(this, wxSize(3, 3));
     mTools[ToolType::FilterMin] = std::make_shared<CFilterTool<CMinFilter>>(this, wxSize(3, 3));
 
-    mDocument = std::make_unique<CDocument>(DOC_SIZE);
-    mBuffer = wxBitmap(mDocument->GetSize(), 32);
-    Draw();
+    New();
   }
 
   CMainWindow::~CMainWindow() {}
@@ -183,18 +181,21 @@ namespace jd {
     if(mCurrentToolType == ToolType::None)
       return;
 
+    auto shapeTool = GetShapeTool();
     if(event.GetButton() == mDrag.mButton == wxMOUSE_BTN_LEFT) {
-      auto tool = GetShapeTool();
-      if(tool) {
-        auto result = tool->Finish();
-        for(auto& shape : result) {
-          mDocument->AddShape(shape);
-        }
-        Draw();
+      if(shapeTool) {
+        shapeTool->Finish();
       }
     }
     else if(event.GetButton() == wxMOUSE_BTN_RIGHT) {
       GetTool().Cancel();
+    }
+    if(shapeTool && shapeTool->HasResult()) {
+      auto result = shapeTool->TakeResult();
+      for(auto& shape : result) {
+        mDocument->AddShape(shape);
+      }
+      Draw();
     }
     GetSizer()->Layout();
     Refresh();
@@ -261,11 +262,15 @@ namespace jd {
     auto tool = GetShapeTool();
     if(tool) {
       tool->Start(wxPoint());
-      auto shapes = tool->Finish();
-      for(auto& shape : shapes) {
-        mDocument->AddShape(shape);
+      tool->Finish();
+
+      if(tool->HasResult()) {
+        auto shapes = tool->TakeResult();
+        for(auto& shape : shapes) {
+          mDocument->AddShape(shape);
+        }
+        Draw();
       }
-      Draw();
       Refresh();
     }
   }

@@ -32,11 +32,15 @@ namespace jd {
     virtual ~CShapeTool();
 
     virtual void Execute() override = 0;
+    virtual void Cancel() override = 0;
+
     virtual wxCursor OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const& pt) = 0;
     virtual void Start(wxPoint const& pt) = 0;
     virtual void Update(wxPoint const& pt) = 0;
-    virtual ShapeVecT Finish() = 0;
-    virtual void Cancel() override = 0;
+    virtual void Finish() = 0;
+
+    virtual bool HasResult() { return false; }
+    virtual ShapeVecT TakeResult() { return ShapeVecT(); }
 
     virtual void DrawPreview(wxDC& dc) = 0;
   };

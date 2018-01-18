@@ -21,6 +21,7 @@ namespace jd {
     std::shared_ptr<CShapeEditor> mEditor;
     std::shared_ptr<CShape> mShape;
     std::shared_ptr<wxColor> mColor;
+    ShapeVecT mResult;
     wxPoint mStartPt;
     bool mWasUpdate = false;
 
@@ -30,11 +31,15 @@ namespace jd {
 
     // Inherited via CShapeTool
     virtual void Execute() override;
+    virtual void Cancel() override;
     virtual wxCursor OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) override;
     virtual void Start(wxPoint const& pt) override;
     virtual void Update(wxPoint const & pt) override;
-    virtual ShapeVecT Finish() override;
-    virtual void Cancel() override;
+    virtual void Finish() override;
+
+    virtual bool HasResult() override;
+    virtual ShapeVecT TakeResult() override;
+
     virtual void DrawPreview(wxDC & dc) override;
   };
 
@@ -52,11 +57,12 @@ namespace jd {
 
     // Inherited via CShapeTool
     virtual void Execute() override;
+    virtual void Cancel() override;
     virtual wxCursor OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) override;
     virtual void Start(wxPoint const & pt) override;
     virtual void Update(wxPoint const & pt) override;
-    virtual ShapeVecT Finish() override;
-    virtual void Cancel() override;
+    virtual void Finish() override;
+
     virtual void DrawPreview(wxDC & dc) override;
 
   private:
@@ -78,11 +84,11 @@ namespace jd {
 
     // Inherited via CShapeTool
     virtual void Execute() override;
+    virtual void Cancel() override;
     virtual wxCursor OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) override;
     virtual void Start(wxPoint const & pt) override;
     virtual void Update(wxPoint const & pt) override;
-    virtual ShapeVecT Finish() override;
-    virtual void Cancel() override;
+    virtual void Finish() override;
     virtual void DrawPreview(wxDC & dc) override;
 
   private:

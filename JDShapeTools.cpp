@@ -35,14 +35,22 @@ namespace jd {
     }
   }
 
-  ShapeVecT CCreateShapeTool::Finish() {
-    auto result = ShapeVecT();
+  void CCreateShapeTool::Finish() {
     if(mShape) {
       mEditor->SetChanges(mShape);
       mShape->SetFillColor(*mColor);
-      result.push_back(mShape);
+      mResult.push_back(mShape);
       mShape.reset();
     }
+  }
+
+  bool CCreateShapeTool::HasResult() {
+    return !mResult.empty();
+  }
+
+  ShapeVecT CCreateShapeTool::TakeResult() {
+    auto result = mResult;
+    mResult.clear();
     return result;
   }
 
@@ -94,12 +102,11 @@ namespace jd {
     }
   }
 
-  ShapeVecT CMoveShapeTool::Finish() {
+  void CMoveShapeTool::Finish() {
     if(mSelectedShape) {
       GetEditor()->SetChanges(mSelectedShape);
       mSelectedShape.reset();
     }
-    return ShapeVecT();
   }
 
   void CMoveShapeTool::Cancel() {
@@ -182,12 +189,11 @@ namespace jd {
     }
   }
 
-  ShapeVecT CSizeShapeTool::Finish() {
+  void CSizeShapeTool::Finish() {
     if(mSelectedShape) {
       GetEditor()->SetChanges(mSelectedShape);
       mSelectedShape.reset();
     }
-    return ShapeVecT();
   }
 
   void CSizeShapeTool::Cancel() {
