@@ -161,4 +161,11 @@ namespace jd {
     sizer.Add(mOrigin.get());
     sizer.Add(mRadius.get());
   }
+  CBezierShapeEditor::CBezierShapeEditor(wxWindow * parent) : CShapeEditor(parent) {
+    CreateGUI("Bezier");
+  }
+  CBezierShapeEditor::~CBezierShapeEditor() {}
+  void CBezierShapeEditor::SetChanges(std::shared_ptr<CShape> shape) const {}
+  void CBezierShapeEditor::SetData(const std::shared_ptr<CShape> shape) {}
+  void CBezierShapeEditor::AddShapeSpecificControls(wxBoxSizer & sizer) {}
 }

@@ -87,4 +87,20 @@ namespace jd {
     virtual void AddShapeSpecificControls(wxBoxSizer & sizer) override;
   };
 
+  class CBezierShapeEditor
+    : public CShapeEditor {
+  public:
+    CBezierShapeEditor(wxWindow* parent);
+    ~CBezierShapeEditor();
+
+
+    // Inherited via CShapeEditor
+    virtual void SetChanges(std::shared_ptr<CShape> shape) const override;
+
+    virtual void SetData(const std::shared_ptr<CShape> shape) override;
+
+  protected:
+    virtual void AddShapeSpecificControls(wxBoxSizer & sizer) override;
+  };
+
 }

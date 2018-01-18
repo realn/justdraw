@@ -229,7 +229,15 @@ namespace jd {
       tl = std::min(tl, pt);
       br = std::max(br, pt);
     }
-    return wxRect(tl, br);
+    for(auto& pt : mBasePoints) {
+      tl = std::min(tl, convert(pt));
+      br = std::max(br, convert(pt));
+    }
+    for(auto& pt : mCtrlPoints) {
+      tl = std::min(tl, convert(pt));
+      br = std::max(br, convert(pt));
+    }
+    return wxRect(tl - wxPoint(2, 2), br + wxPoint(2, 2));
   }
   PointVecT CBezierShape::GetControlPoints() const {
     auto result = PointVecT();
@@ -271,6 +279,16 @@ namespace jd {
           return true;
         }
       }
+      for(auto& pt : mBasePoints) {
+        if(glm::distance(pt, convert(point)) < range) {
+          return true;
+        }
+      }
+      for(auto& pt : mCtrlPoints) {
+        if(glm::distance(pt, convert(point)) < range) {
+          return true;
+        }
+      }
     }
     return false;
   }
@@ -306,11 +324,41 @@ namespace jd {
       return;
     }
 
+    Vec2PointsT points = mCtrlPoints;
+    size_t i = 0;
+    do {
+      points.insert(points.begin(), mBasePoints.front());
+      points.push_back(mBasePoints.back());
+      points = CreateTLinePoints(points, 0.5f);
+      i++;
+    }
+    while(i < mMaxIterations);
+
     mResultPoints.push_back(convert(mBasePoints.front()));
-    for(auto& pt : mCtrlPoints) {
+    for(auto& pt : points) {
       mResultPoints.push_back(convert(pt));
     }
     mResultPoints.push_back(convert(mBasePoints.back()));
+  }
+
+  CBezierShape::Vec2PointsT CBezierShape::CreateTLinePoints(Vec2PointsT const & srcpoints, float const t) {
+    auto result = Vec2PointsT();
+    if(srcpoints.empty()) {
+      return result;
+    }
+    else if(srcpoints.size() <= 2) {
+      for(auto& pt : srcpoints) {
+        result.push_back(pt);
+      }
+      return result;
+    }
+
+    for(auto i = 0u; i < srcpoints.size() - 1; i++) {
+      auto res = glm::mix(srcpoints[i], srcpoints[i + 1], t);
+      result.push_back(res);
+    }
+
+    return result;
   }
 
 }

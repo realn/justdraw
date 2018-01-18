@@ -75,6 +75,7 @@ namespace jd {
     mEditors[ShapeType::Line] = wxmake_shared<CLineShapeEditor>(this);
     mEditors[ShapeType::Rect] = wxmake_shared<CRectShapeEditor>(this);
     mEditors[ShapeType::Circle] = wxmake_shared<CCircleShapeEditor>(this);
+    mEditors[ShapeType::Bezier] = wxmake_shared<CBezierShapeEditor>(this);
 
     for(auto& item : mEditors) {
       item.second->GetConfirmButton().Bind(wxEVT_BUTTON, &CMainWindow::OnShapeCreateButtonClicked, this);

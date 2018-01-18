@@ -125,7 +125,7 @@ namespace jd {
     Vec2PointsT mBasePoints;
     Vec2PointsT mCtrlPoints;
     wxPointsT mResultPoints;
-    size_t mMaxIterations = 4;
+    size_t mMaxIterations = 20;
     bool mChanged = false;
 
   public:
@@ -153,6 +153,6 @@ namespace jd {
   private:
     void Generate();
 
-    //static Vec2PointsT CreateTLinePoints(Vec2PointsT const& srcpoints);
+    static Vec2PointsT CreateTLinePoints(Vec2PointsT const& srcpoints, float const t);
   };
 }
