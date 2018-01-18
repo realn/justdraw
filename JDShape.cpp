@@ -211,6 +211,14 @@ namespace jd {
     mChanged = true;
     return mCtrlPoints.size() - 1;
   }
+
+  void CBezierShape::SetCtrlPoint(size_t const index, glm::vec2 const & pos) {
+    if(index < mCtrlPoints.size()) {
+      mCtrlPoints[index] = pos;
+      mChanged = true;
+    }
+  }
+
   ShapeType CBezierShape::GetType() const {
     return ShapeType::Bezier;
   }
@@ -255,11 +263,13 @@ namespace jd {
   }
 
   bool CBezierShape::IsInMoveBounds(wxPoint const & point, float range) const {
-    for(auto i = 0u; i < mResultPoints.size() - 1; i++) {
-      if(isPointInLineRange(mResultPoints[i],
-                            mResultPoints[i + 1],
-                            point, range)) {
-        return true;
+    if(!mResultPoints.empty()) {
+      for(auto i = 0u; i < mResultPoints.size() - 1; i++) {
+        if(isPointInLineRange(mResultPoints[i],
+                              mResultPoints[i + 1],
+                              point, range)) {
+          return true;
+        }
       }
     }
     return false;
@@ -296,12 +306,11 @@ namespace jd {
       return;
     }
 
-    for(auto& pt : mBasePoints) {
-      mResultPoints.push_back(convert(pt));
-    }
+    mResultPoints.push_back(convert(mBasePoints.front()));
     for(auto& pt : mCtrlPoints) {
       mResultPoints.push_back(convert(pt));
     }
+    mResultPoints.push_back(convert(mBasePoints.back()));
   }
 
 }

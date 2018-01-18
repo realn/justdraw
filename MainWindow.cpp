@@ -34,7 +34,8 @@ namespace jd {
     mShapeFactories[ShapeType::Rect] = std::make_shared<CShapeFactory<CRectShape>>();
     mShapeFactories[ShapeType::Circle] = std::make_shared<CShapeFactory<CCircleShape>>();
 
-    wxBitmap whiteBitmap(32, 32);
+    wxImage whiteBitmap(32, 32);
+    whiteBitmap.Clear(255);
 
     auto toolbar = CreateToolBar();
     toolbar->AddTool(wxid(ToolType::NewFile), L"New", whiteBitmap, "New");
@@ -44,10 +45,11 @@ namespace jd {
     toolbar->AddTool(wxid(ToolType::CreateLine), L"Line", wxBitmap(STR_BMP_TOOL_LINE, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::CreateRect), L"Rect", wxBitmap(STR_BMP_TOOL_RECT, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::CreateCircle), L"Circle", wxBitmap(STR_BMP_TOOL_SPHERE, wxBITMAP_TYPE_PNG));
+    toolbar->AddTool(wxid(ToolType::CreateBezier), L"Bezier", whiteBitmap, L"Create Bezier Shape");
     toolbar->AddSeparator();
     toolbar->AddTool(wxid(ToolType::Move), L"Move", wxBitmap(STR_BMP_TOOL_MOVE, wxBITMAP_TYPE_PNG));
     toolbar->AddTool(wxid(ToolType::Size), L"Size", wxBitmap(STR_BMP_TOOL_SIZE, wxBITMAP_TYPE_PNG));
-    toolbar->AddTool(wxid(ToolType::Color), L"Color", whiteBitmap);
+    toolbar->AddTool(wxid(ToolType::Color), L"Color", whiteBitmap, L"Change color");
     toolbar->AddSeparator();
     toolbar->AddTool(wxid(ToolType::FilterMedium), L"Medium", whiteBitmap, "Medium Filter");
     toolbar->AddTool(wxid(ToolType::FilterMedian), L"Median", whiteBitmap, "Median Filter");
@@ -92,6 +94,7 @@ namespace jd {
     mTools[ToolType::CreateLine] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Line], mEditors[ShapeType::Line], shColor);
     mTools[ToolType::CreateRect] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Rect], mEditors[ShapeType::Rect], shColor);
     mTools[ToolType::CreateCircle] = std::make_shared<CCreateShapeTool>(mShapeFactories[ShapeType::Circle], mEditors[ShapeType::Circle], shColor);
+    mTools[ToolType::CreateBezier] = std::make_shared<CBezierShapeTool>(shColor);
     mTools[ToolType::Move] = std::make_shared<CMoveShapeTool>(mEditors);
     mTools[ToolType::Size] = std::make_shared<CSizeShapeTool>(mEditors);
     mTools[ToolType::Color] = std::make_shared<CColorTool>(this, toolbar, shColor);
@@ -182,13 +185,13 @@ namespace jd {
       return;
 
     auto shapeTool = GetShapeTool();
-    if(event.GetButton() == mDrag.mButton == wxMOUSE_BTN_LEFT) {
+    if(event.GetButton() == wxMOUSE_BTN_RIGHT) {
+      GetTool().Cancel();
+    }
+    else if(event.GetButton() == mDrag.mButton == wxMOUSE_BTN_LEFT) {
       if(shapeTool) {
         shapeTool->Finish();
       }
-    }
-    else if(event.GetButton() == wxMOUSE_BTN_RIGHT) {
-      GetTool().Cancel();
     }
     if(shapeTool && shapeTool->HasResult()) {
       auto result = shapeTool->TakeResult();

@@ -134,6 +134,9 @@ namespace jd {
 
     void SetBasePoints(wxPoint const& start, wxPoint const& end);
     size_t AddCtrlPoint(glm::vec2 const& pos);
+    void SetCtrlPoint(size_t const index, glm::vec2 const& pos);
+
+    bool HasBasePoints() const { return !mBasePoints.empty(); }
 
     // Inherited via CShape
     virtual ShapeType GetType() const override;

@@ -221,4 +221,82 @@ namespace jd {
       dc.DrawRectangle(rect);
     }
   }
+
+  CBezierShapeTool::CBezierShapeTool(std::shared_ptr<wxColor> color) 
+    : mColor(color)
+  {}
+
+  CBezierShapeTool::~CBezierShapeTool() {}
+
+  void CBezierShapeTool::Execute() {}
+
+  void CBezierShapeTool::Cancel() {
+    if(mShape) {
+      if(mShape->HasBasePoints()) {
+        mShape->SetFillColor(*mColor);
+        mResult.push_back(mShape);
+      }
+      mShape.reset();
+      mState = State::BasePointsIdle;
+    }
+  }
+
+  wxCursor CBezierShapeTool::OnShapeHover(std::shared_ptr<CShape> shape, wxPoint const & pt) {
+    return wxCURSOR_CROSS;
+  }
+
+  void CBezierShapeTool::Start(wxPoint const & pt) {
+    if(!mShape && mState == State::BasePointsIdle) {
+      mShape = std::make_shared<CBezierShape>();
+      mState = State::BasePointsUpdate;
+    }
+    if(mState == State::CtrlPointsIdle) {
+      mCtrlPointIdx = mShape->AddCtrlPoint(convert(pt));
+      mState = State::CtrlPointsUpdate;
+    }
+    mStartPt = pt;
+    mWasUpdate = false;
+  }
+
+  void CBezierShapeTool::Update(wxPoint const & pt) {
+    if(mShape) {
+      if(mState == State::BasePointsUpdate) {
+        mShape->SetBasePoints(mStartPt, pt);
+      }
+      else if(mState == State::CtrlPointsUpdate) {
+        mShape->SetCtrlPoint(mCtrlPointIdx, convert(pt));
+      }
+      mWasUpdate = true;
+    }
+  }
+
+  void CBezierShapeTool::Finish() {
+    if(mShape) {
+      if(mState == State::BasePointsUpdate) {
+        mState = State::CtrlPointsIdle;
+      }
+      if(mState == State::CtrlPointsUpdate) {
+        mState = State::CtrlPointsIdle;
+      }
+      mShape->SetFillColor(*mColor);
+    }
+  }
+
+  bool CBezierShapeTool::HasResult() {
+    return !mResult.empty();;
+  }
+
+  ShapeVecT CBezierShapeTool::TakeResult() {
+    auto result = mResult;
+    mResult.clear();
+    return result;
+  }
+
+  void CBezierShapeTool::DrawPreview(wxDC & dc) {
+    if(mShape && mWasUpdate) {
+      mShape->SetFillColor(*mColor);
+      mShape->Draw(dc);
+    }
+  }
+
 }
