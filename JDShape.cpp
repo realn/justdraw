@@ -37,12 +37,7 @@ namespace jd {
   }
 
   bool CLineShape::IsInMoveBounds(wxPoint const & point, float range) const {
-    auto v1 = convert(mA);
-    auto v2 = convert(mB);
-    auto p = convert(point);
-    auto closest = glm::closestPointOnLine(p, v1, v2);
-
-    return glm::distance(p, closest) < range;
+    return isPointInLineRange(mA, mB, point, range);
   }
 
   void CLineShape::Move(wxPoint const& dist) {
@@ -200,4 +195,113 @@ namespace jd {
       break;
     }
   }
+  CBezierShape::CBezierShape() {}
+
+  CBezierShape::~CBezierShape() {}
+
+  void CBezierShape::SetBasePoints(wxPoint const & start, wxPoint const & end) {
+    mBasePoints.clear();
+    mBasePoints.push_back(convert(start));
+    mBasePoints.push_back(convert(end));
+    mChanged = true;
+  }
+
+  size_t CBezierShape::AddCtrlPoint(glm::vec2 const & pos) {
+    mCtrlPoints.push_back(pos);
+    mChanged = true;
+    return mCtrlPoints.size() - 1;
+  }
+  ShapeType CBezierShape::GetType() const {
+    return ShapeType::Bezier;
+  }
+  wxRect CBezierShape::GetBoundingRect() const {
+    auto tl = wxPoint(0, 0);
+    auto br = wxPoint(0, 0);
+    for(auto& pt : mResultPoints) {
+      tl = std::min(tl, pt);
+      br = std::max(br, pt);
+    }
+    return wxRect(tl, br);
+  }
+  PointVecT CBezierShape::GetControlPoints() const {
+    auto result = PointVecT();
+    for(auto& pt : mBasePoints) {
+      result.push_back(convert(pt));
+    }
+    for(auto& pt : mCtrlPoints) {
+      result.push_back(convert(pt));
+    }
+    return result;
+  }
+  Freedom CBezierShape::GetControlPointFreedom(size_t index) {
+    if(mBasePoints.size() + mCtrlPoints.size() > index)
+      return Freedom::Full;
+    return Freedom::None;
+  }
+
+  void CBezierShape::Draw(wxDC & dc) {
+    if(mChanged) {
+      Generate();
+      mChanged = false;
+    }
+
+    dc.SetBrush(mColor);
+    dc.DrawLines(static_cast<int>(mResultPoints.size()),
+                 mResultPoints.data());
+  }
+
+  void CBezierShape::SetByPoints(wxPoint const & pt1, wxPoint const & pt2) {
+    SetBasePoints(pt1, pt2);
+  }
+
+  bool CBezierShape::IsInMoveBounds(wxPoint const & point, float range) const {
+    for(auto i = 0u; i < mResultPoints.size() - 1; i++) {
+      if(isPointInLineRange(mResultPoints[i],
+                            mResultPoints[i + 1],
+                            point, range)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void CBezierShape::Move(wxPoint const & dist) {
+    auto ds = convert(dist);
+    for(auto& pt : mBasePoints) { pt += ds; }
+    for(auto& pt : mCtrlPoints) { pt += ds; }
+    mChanged = true;
+  }
+
+  void CBezierShape::MoveControlPoint(size_t index, wxPoint const & dist) {
+    auto ds = convert(dist);
+    if(index < mBasePoints.size()) {
+      mBasePoints[index] += ds;
+      mChanged = true;
+    }
+    else if(index - mBasePoints.size() < mCtrlPoints.size()) {
+      mCtrlPoints[index - mBasePoints.size()] += ds;
+      mChanged = true;
+    }
+  }
+
+  void CBezierShape::Generate() {
+    mResultPoints.clear();
+    if(mBasePoints.empty()) {
+      return;
+    }
+    if(mCtrlPoints.empty()) {
+      for(auto& pt : mBasePoints) { 
+        mResultPoints.push_back(convert(pt)); 
+      }
+      return;
+    }
+
+    for(auto& pt : mBasePoints) {
+      mResultPoints.push_back(convert(pt));
+    }
+    for(auto& pt : mCtrlPoints) {
+      mResultPoints.push_back(convert(pt));
+    }
+  }
+
 }

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <wx/dcclient.h>
+#include <glm\vec2.hpp>
 
 #include "Consts.h"
 
@@ -111,5 +112,44 @@ namespace jd {
     virtual bool IsInMoveBounds(wxPoint const& point, float range) const override;
     virtual void Move(wxPoint const& dist) override;
     virtual void MoveControlPoint(size_t index, wxPoint const& dist) override;
+  };
+
+  class CBezierShape 
+    : public CShape
+  {
+  public:
+    using Vec2PointsT = std::vector<glm::vec2>;
+    using wxPointsT = std::vector<wxPoint>;
+
+  private:
+    Vec2PointsT mBasePoints;
+    Vec2PointsT mCtrlPoints;
+    wxPointsT mResultPoints;
+    size_t mMaxIterations = 4;
+    bool mChanged = false;
+
+  public:
+    CBezierShape();
+    virtual ~CBezierShape();
+
+    void SetBasePoints(wxPoint const& start, wxPoint const& end);
+    size_t AddCtrlPoint(glm::vec2 const& pos);
+
+    // Inherited via CShape
+    virtual ShapeType GetType() const override;
+    virtual wxRect GetBoundingRect() const override;
+    virtual PointVecT GetControlPoints() const override;
+    virtual Freedom GetControlPointFreedom(size_t index) override;
+
+    virtual void Draw(wxDC & dc) override;
+    virtual void SetByPoints(wxPoint const & pt1, wxPoint const & pt2) override;
+    virtual bool IsInMoveBounds(wxPoint const & point, float range) const override;
+    virtual void Move(wxPoint const & dist) override;
+    virtual void MoveControlPoint(size_t index, wxPoint const & dist) override;
+
+  private:
+    void Generate();
+
+    //static Vec2PointsT CreateTLinePoints(Vec2PointsT const& srcpoints);
   };
 }

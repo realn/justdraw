@@ -95,4 +95,10 @@ namespace jd {
     std::shared_ptr<CShapeEditor> GetEditor() const;
     void DrawPoints(wxDC& dc, PointVecT const& points) const;
   };
+
+  class CBezierShapeTool 
+    : public CShapeTool
+  {
+
+  };
 }

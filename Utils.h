@@ -69,4 +69,14 @@ namespace jd {
   };
 
   inline CEventLockGuard lock(CEventLock& lock) { return CEventLockGuard(lock); }
+
+  inline bool isPointInLineRange(wxPoint const& lineStart, wxPoint const& lineEnd, wxPoint const& point, float const range) {
+    auto v1 = convert(lineStart);
+    auto v2 = convert(lineEnd);
+    auto p = convert(point);
+    auto closest = glm::closestPointOnLine(p, v1, v2);
+    return glm::distance(p, closest) < range;
+  }
+
+
 }

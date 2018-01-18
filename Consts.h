@@ -6,6 +6,7 @@ namespace jd {
     Line = 1,
     Rect = 2,
     Circle = 3,
+    Bezier = 4,
   };
 
   enum class ToolType {
@@ -13,6 +14,7 @@ namespace jd {
     CreateLine,
     CreateRect,
     CreateCircle,
+    CreateBezier,
     Move,
     Size,
     Color,
